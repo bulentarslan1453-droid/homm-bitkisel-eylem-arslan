@@ -1,7 +1,7 @@
 // Homm Bitkisel bağımsız temsilci sitesi üretici.
 // Yayın sürümü:  INDEX=1 node build.mjs   (INDEX olmadan Google'a kapalı üretir)
 // Eylem Arslan'ın fotoğrafı assets/eylem-arslan.jpg olarak konursa otomatik kullanılır.
-import { mkdirSync, writeFileSync, rmSync, existsSync, cpSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, rmSync, existsSync, cpSync } from 'node:fs';
 
 const REPO = 'homm-bitkisel-eylem-arslan';
 const ORIGIN = 'https://bulentarslan1453-droid.github.io';
@@ -20,38 +20,30 @@ const WA_GENEL = WA('Merhaba, Homm Bitkisel üyeliği hakkında bilgi almak isti
 const OUT = 'docs';
 const FOTO = existsSync('assets/eylem-arslan.jpg');
 
-const nav = [
-  ['', 'Ana Sayfa'], ['hakkimizda/', 'Hakkımızda'], ['hizli-basvuru/', 'Hızlı Başvuru'], ['homm-bitkisel-urunleri/', 'Ürünler'],
-  ['homm-bitkisel-kayit/', 'Nasıl Kayıt Olunur'], ['homm-bitkisel-temsilci-ol/', 'Temsilci Ol'], ['kazanc-plani/', 'Kazanç Planı'], ['sertifikalar/', 'Sertifikalar'],
-  ['sik-sorulan-sorular/', 'Sık Sorulanlar'], ['iletisim/', 'İletişim'],
-];
-const altnav = [['ayricalikli-musteri/', 'Ayrıcalıklı Müşteri'], ['eylem-arslan/', 'Eylem Arslan Kimdir?'], ['kvkk/', 'KVKK Aydınlatma Metni']];
+const nav = [['', 'Ana Sayfa'], ['homm-bitkisel-urunleri/', 'Ürünlerimiz'], ['hakkimizda/', 'Hakkımızda'], ['homm-bitkisel-kayit/', 'Nasıl Kayıt Olunur'], ['homm-bitkisel-temsilci-ol/', 'Temsilci Ol'], ['sik-sorulan-sorular/', 'Sık Sorulanlar'], ['iletisim/', 'İletişim']];
+const altnav = [['kazanc-plani/', 'Kazanç Planı'], ['sertifikalar/', 'Sertifikalar'], ['hizli-basvuru/', 'Hızlı Başvuru'], ['ayricalikli-musteri/', 'Ayrıcalıklı Müşteri'], ['eylem-arslan/', 'Eylem Arslan Kimdir?'], ['kvkk/', 'KVKK Aydınlatma Metni']];
 
 // Görseller ve adlar hommbitkisel.com.tr resmi ürün sayfasından alınmıştır.
 const URUN_URL = MAGAZA;
 // Mağaza en fazla 20 ürün gösterir. Tüm katalog için önce mağaza linki açılır (referans kaydedilir), sonra aynı sekme kataloğa geçer.
 const KATALOG = 'https://www.hommbitkisel.com.tr/urunler-b/tumu';
 const tumBtn = (cls = 'btn primary', yazi = 'Tüm Ürünleri Gör (350+)') => `<a class="${cls}" href="${MAGAZA}" onclick="return tumUrunler()" rel="nofollow" target="_blank">${yazi}</a>`;
-const urunler = [
-  ['balli-krem', 'Ballı Krem', '50 ml', 'Cilt Bakımı'],
-  ['ozonlu-zeytinyagi', 'Ozonla Zenginleştirilmiş Zeytinyağı', '30 ml', 'Cilt Bakımı'],
-  ['papatyali-yuz-jeli', 'Papatyalı Yüz Yıkama Jeli', '250 ml', 'Cilt Bakımı'],
-  ['yogun-nemlendirici', 'Yoğun Nemlendirici Krem', '75 ml', 'Cilt Bakımı'],
-  ['bright-c-serum', 'Powerfull Bright C Serum', '30 ml', 'Cilt Bakımı'],
-  ['gunes-kremi', 'Güneş Kremi 50 SPF', '50 ml', 'Cilt Bakımı'],
-  ['argan-serum', 'Argan Yağlı Serum', '30 ml', 'Saç ve Kişisel Bakım'],
-  ['yaseminli-dus-jeli', 'Yaseminli Duş Jeli', '400 ml', 'Saç ve Kişisel Bakım'],
-  ['dis-macunu', 'Damla Sakızlı Diş Macunu', '75 ml', 'Saç ve Kişisel Bakım'],
-  ['bebek-sampuani', 'Bebek Saç ve Vücut Şampuanı', '400 ml', 'Saç ve Kişisel Bakım'],
-  ['bulasik-deterjani', 'Konsantre Bulaşık Deterjanı', '500 ml', 'Ev Temizliği'],
-  ['camasir-deterjani', 'Ekstra Konsantre Çamaşır Deterjanı', '1000 ml', 'Ev Temizliği'],
-  ['yag-cozucu', 'Yağ Çözücü', '500 ml', 'Ev Temizliği'],
-  ['yuzey-temizleyici', 'Yüzey Temizleyicisi', '1000 ml', 'Ev Temizliği'],
-  ['kolajenli-kahve', 'Kolajenli Hindiba Kahve', '100 gr', 'Kahve ve İçecek'],
-  ['corekotu-kahve', 'Çörekotu Kahve', '30 adet', 'Kahve ve İçecek'],
-];
-const urunKart = ([d, ad, boy, kat]) => `<a class="urun" href="${URUN_URL}" rel="nofollow noopener" target="_blank"><span class="ug"><img src="${P}img/urun/${d}.png" alt="Homm ${ad} ${boy}" loading="lazy"></span><small>${kat}</small><b>${ad}</b><i>${boy}</i></a>`;
+// Ürün verisi resmi katalogdan urunleri-cek.mjs ile çekilir (urunler.json).
+const VERI = JSON.parse(readFileSync('urunler.json', 'utf8'));
+const TL = (n) => n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
+const KAT_SIRA = ['Kozmetik', 'Renkli Kozmetik / Makyaj', 'Parfüm', 'Temizlik & Hijyen', 'Beslenme & Gıda', 'Gıda Takviyeleri', 'Bitkisel Sabunlar', 'Pet Evcil Hayvan Bakım', 'Diğer'];
+const urunler = VERI.urunler.filter(u => KAT_SIRA.includes(u.kat)).sort((a, b) => KAT_SIRA.indexOf(a.kat) - KAT_SIRA.indexOf(b.kat));
+const FIYAT_TARIH = VERI.tarih.split('-').reverse().join('.');
+const urunKart = (u) => `<a class="urun" href="${MAGAZA}" onclick="return tumUrunler()" rel="nofollow" target="_blank" data-k="${u.kat}" data-a="${(u.kod + ' ' + u.ad).toLocaleLowerCase('tr')}"><span class="ug"><img src="https://www.hommcdn.com/${u.img}" alt="${u.ad}" loading="lazy" width="200" height="200"></span><small>${u.kod}</small><b>${u.ad}</b><span class="fy">${u.fiyat > u.uye ? `<s>${TL(u.fiyat)}</s>` : ''}<em>${TL(u.uye)}</em></span><span class="sbtn">Satın Al</span></a>`;
 const urunGrid = (list) => `<div class="urunler">${list.map(urunKart).join('')}</div>`;
+const fiyatNot = `<p class="not">Renkli fiyat <b>üye fiyatıdır</b>; üstü çizili fiyat üye olmadan alışveriş fiyatıdır. Fiyatlar ${FIYAT_TARIH} tarihlidir, güncel fiyat sepette görünür.</p>`;
+const ONE_CIKAN = ['BALLI KREM 50', 'OZONLA ZENGİNLEŞTİRİLMİŞ ZEYTİNYAĞI 30', 'PAPATYALI YÜZ YIKAMA JELİ 250', 'ARGAN YAĞLI SERUM 30', 'KOLAJEN İÇECEK 20', 'KOLAJENLI HİNDİBA KAHVE 100', 'KONSANTRE BULAŞIK DETERJANI 500', 'ÇAMAŞIR DETERJANI 1000']
+  .map(x => urunler.find(u => u.ad.toLocaleUpperCase('tr').includes(x))).filter(Boolean);
+const hizli = [
+  [KAYIT, 'Üye Ol', 'ekip', 1], [MAGAZA, 'Alışveriş', 'sepet', 1], [P + 'homm-bitkisel-urunleri/', 'Tüm Ürünler', 'hediye', 0],
+  [P + 'ayricalikli-musteri/', 'Ayrıcalıklı Müşteri', 'onay', 0], [P + 'kazanc-plani/', 'Kazanç Planı', 'lira', 0],
+  [P + 'sertifikalar/', 'Sertifikalar', 'egitim', 0], [P + 'hizli-basvuru/', 'Hızlı Başvuru', 'tel', 0],
+];
 const sertifikalar = [[11, 'Doğrudan Satış Yetki Belgesi', 'T.C. Ticaret Bakanlığı'], [1, 'Helal Kozmetik Sertifikası', 'Helal uygunluk belgesi'], [2, 'Helal Gıda Sertifikası', 'Helal uygunluk belgesi'], [8, 'Helal Deterjan Sertifikası', 'Helal uygunluk belgesi'], [3, 'İyi Üretim Uygulamaları (GMP)', 'Good Manufacturing Practices'], [4, 'Gıda Güvenliği Yönetimi', 'Food Safety Management'], [5, 'Kalite Yönetimi', 'Quality Management'], [10, 'İşletme Kayıt Belgesi', 'Resmi kayıt belgesi']];
 const uyeBant = `<div class="uyebant"><div><b>Üye olun, daha avantajlı alın</b><span>Üyelik ücretsiz · hoş geldin avantajı · ürünlerde <b>%30 indirim</b></span></div><a class="btn primary kucuk" href="${KAYIT}" rel="nofollow noopener" target="_blank">Ücretsiz Üye Ol</a><a class="btn ghost kucuk" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Üye olmadan alışveriş</a></div>`;
 
@@ -219,7 +211,8 @@ ${bioKart}
   <p class="ustbaslik">Ürünler</p>
   <h2>Öne çıkan Homm ürünleri</h2>
   <p class="indirim"><b>%30</b><span>Üye olduğunuzda bu ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız.</span></p>
-  ${urunGrid([0, 1, 2, 6, 7, 10, 11, 14].map(i => urunler[i]))}
+  ${urunGrid(ONE_CIKAN)}
+  ${fiyatNot}
   ${uyeBant}
   <div class="cta">${tumBtn('btn ghost')}</div>
 </section>
@@ -318,17 +311,26 @@ ${form('Temsilcilik hakkında sizi arayalım')}` },
 <p>Hangisinin size uygun olduğundan emin değilseniz numaranızı bırakın, birlikte karar verelim.</p>
 ${form()}` },
 
-{ path: 'homm-bitkisel-urunleri/', title: `Homm Bitkisel Ürünleri: Kategoriler ve Sipariş | ${AD}`,
-  desc: `Homm Bitkisel ürün kategorileri: cilt bakımı, saç bakımı, kişisel bakım, ev temizliği ve daha fazlası. Üye olarak nasıl sipariş verilir?`,
-  h1: 'Homm Bitkisel Ürünleri',
+{ path: 'homm-bitkisel-urunleri/', genis: true, title: `Homm Bitkisel Ürünleri ve Fiyat Listesi (${urunler.length} Ürün) | ${AD}`,
+  desc: `Homm Bitkisel tüm ürünler ve güncel fiyatlar: kozmetik, makyaj, parfüm, temizlik, gıda takviyesi. Üye fiyatı ve üye olmadan alış fiyatı yan yana.`,
+  h1: 'Homm Bitkisel Ürünleri ve Fiyatları',
   lead: 'Ürünleri mağaza linkimden üye olmadan alabilir, ücretsiz üye olursanız aynı ürünleri %30 indirimli alırsınız.',
   body: `
-${['Cilt Bakımı', 'Saç ve Kişisel Bakım', 'Ev Temizliği', 'Kahve ve İçecek'].map(k => `<h2>${k}</h2>${urunGrid(urunler.filter(u => u[3] === k))}`).join('')}
-<p class="indirim"><b>%30</b><span>Üye olduğunuzda ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız. Üyelik ücretsizdir.</span></p>
-<p>Burada yalnızca bir seçki var; katalogda 350'den fazla ürün bulunuyor. Hepsini benim referansımla görmek için aşağıdaki butonu kullanın.</p>
 ${uyeBant}
-<div class="cta">${tumBtn()}<a class="btn ghost" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Öne Çıkan 20 Ürün</a></div>
-<p class="not">“Tüm Ürünleri Gör” butonu mağazamı açar ve birkaç saniye içinde tüm kataloğa geçer; sayfanın üstünde “${AD} referansı ile alışveriş yapıyorsunuz” yazısını görürsünüz.</p>
+${fiyatNot}
+<div class="filtre">
+  <input id="ara" type="search" placeholder="Ürün adı / ürün kodu" aria-label="Ürün ara" oninput="suz()">
+  <div class="cipler"><button class="sec" onclick="kat(this,'')">Tümü (${urunler.length})</button>${KAT_SIRA.filter(k => urunler.some(u => u.kat === k)).map(k => `<button onclick="kat(this,'${k}')">${k} (${urunler.filter(u => u.kat === k).length})</button>`).join('')}</div>
+  <p class="sayac" id="sayac">${urunler.length} ürün</p>
+</div>
+${urunGrid(urunler)}
+<script>
+var secKat='';
+function kat(b,k){secKat=k;var bs=document.querySelectorAll('.cipler button');for(var i=0;i<bs.length;i++)bs[i].className='';b.className='sec';suz()}
+function suz(){var q=document.getElementById('ara').value.toLocaleLowerCase('tr').trim();var us=document.querySelectorAll('.urunler .urun');var n=0;for(var i=0;i<us.length;i++){var u=us[i];var ok=(!secKat||u.getAttribute('data-k')===secKat)&&(!q||u.getAttribute('data-a').indexOf(q)>-1);u.style.display=ok?'':'none';if(ok)n++}document.getElementById('sayac').textContent=n+' ürün'}
+</script>
+<div class="cta">${tumBtn('btn primary', 'Sepete Eklemek İçin Mağazaya Git')}</div>
+<p class="not">Ürün kartına ya da butona tıkladığınızda mağazam açılır ve birkaç saniye içinde tüm kataloğa geçer; sayfanın üstünde “${AD} referansı ile alışveriş yapıyorsunuz” yazısını görürsünüz.</p>
 <h2>Nasıl sipariş verilir?</h2>
 <p>Ürünleri üye olmadan da alabilirsiniz; ancak üye olduğunuzda aynı ürünleri %30 indirimli alırsınız. Üye olmadan almak için ürün kartına ya da mağaza butonuna tıklayın; üye olduysanız kendi hesabınıza girip sepete ekleyerek indirimli sipariş verirsiniz. Hangi ürünün size uygun olduğunu sormak isterseniz bize yazın.</p>
 <p class="not">Ürün görselleri ve adları Homm Bitkisel'e aittir; güncel fiyat ve içerik mağaza sayfasında yer alır. Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
@@ -498,17 +500,19 @@ const layout = (p) => {
 <meta name="theme-color" content="#50b6bb">
 <link rel="icon" href="${P}favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${P}style.css">
 ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join('\n')}
 </head><body>
-<div class="ust">Bu site Homm Bitkisel'in resmi sitesi değildir; <b>bağımsız temsilci ${AD}</b> tarafından hazırlanmıştır.</div>
+<div class="ust"><div class="ic">Bu site Homm Bitkisel'in resmi sitesi değildir; <b>bağımsız temsilci ${AD}</b> tarafından hazırlanmıştır.</div></div>
 <header><div class="ic">
-  <a class="marka" href="${P}"><img class="hlogo" src="${P}img/homm-logo.png" alt="Homm Life" width="96" height="48"><span>${EKIP}<small>${AD} · Bağımsız Temsilci</small></span></a>
+  <a class="marka" href="${P}"><img class="hlogo" src="${P}img/homm-logo.png" alt="Homm Life" width="110" height="55"></a>
   <nav>${nav.map(([h, t]) => `<a href="${P}${h}"${h === p.path ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
-  <a class="htel" href="tel:+${TEL_INT}">${ik.tel}<span><small>Telefon Numaramız</small>${TEL}</span></a>
-  <a class="btn primary kucuk" href="${KAYIT}" rel="nofollow noopener" target="_blank">Ücretsiz Kayıt</a>
+  <a class="htel" href="tel:+${TEL_INT}">${ik.tel}<span><small>Bilgi ve Üyelik</small>${TEL}</span></a>
+  <a class="btn primary kucuk" href="${KAYIT}" rel="nofollow noopener" target="_blank">Üye Ol</a>
 </div></header>
+<div class="serit">${EKIP.toLocaleUpperCase('tr')} · ${AD.toLocaleUpperCase('tr')} · ${KARIYER.toLocaleUpperCase('tr')} LİDER · BAĞIMSIZ TEMSİLCİ</div>
+<div class="hizli"><div class="ic">${hizli.map(([h, t, i, dis]) => `<a href="${h}"${dis ? ' rel="nofollow noopener" target="_blank"' : ''}><span class="hi">${i === 'lira' ? '₺' : ik[i]}</span>${t}</a>`).join('')}</div></div>
 <main>
 ${ust}
 <div class="ic${p.hero || p.genis ? '' : ' dar'} govde">
@@ -694,6 +698,83 @@ footer a{color:#fff;text-decoration:none;display:block;padding:2px 0}footer a:ho
   .bant,.formkart{grid-template-columns:1fr}.formkart{padding:24px 18px;border-radius:22px;margin:48px -6px}
   .bio{grid-template-columns:1fr;text-align:center;justify-items:center;padding:24px 20px}
   .fgrid{grid-template-columns:1fr}.bolum{margin:48px 0}
+}
+
+/* ---- Homm sitesi görünümü ---- */
+:root{--y:#2a9aa0;--y2:#50b6bb;--z:#50b6bb;--acik:#ebf7f7;--k:#f9f9f9;--m:#2d2c2c;--g:#656565;--s:#e8e8e8;--altin:#d4541e;--r:10px}
+body{font:16px/1.65 "Open Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--k)}
+h1,h2,h3,.fmarka,nav a,.btn,.serit,.hizli a,.ustbaslik,.rozet{font-family:"Montserrat","Open Sans",Arial,sans-serif}
+h1{font-size:clamp(26px,3.8vw,42px);color:var(--m);font-weight:700;letter-spacing:.01em;line-height:1.18}
+h1 em{font-style:normal;color:var(--z)}
+h2{font-size:clamp(20px,2.3vw,26px);color:var(--m);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+h3{color:var(--m);font-weight:600;font-size:16.5px}
+.lead{font-size:17.5px;color:#4a4a4a}
+.ust{background:#2d2c2c;color:#f1f1f1;font-size:12.5px;padding:8px 0;text-align:center}.ust b{color:#fff}
+header{background:#fff;backdrop-filter:none;border-bottom:0}
+header .ic{max-width:1320px;padding-top:14px;padding-bottom:14px;gap:10px 26px}
+.hlogo{height:54px}
+nav{justify-content:center;gap:4px 26px;font-size:13.5px}
+nav a{font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--m);padding:6px 0;border-bottom:3px solid transparent}
+nav a:hover{color:var(--z);border-color:transparent}
+nav a[aria-current]{color:#d4541e;font-style:italic;border-image:linear-gradient(90deg,#d4541e,#f0a23a,#50b6bb) 1}
+.htel svg{background:var(--z)}
+.serit{background:var(--z);color:#fff;text-align:center;padding:13px 16px;font-size:15px;font-weight:500;letter-spacing:.08em}
+.hizli{background:#f4f4f4;border-bottom:1px solid var(--s)}
+.hizli .ic{display:flex;justify-content:center;max-width:1320px;padding-top:10px;padding-bottom:10px}
+.hizli a{flex:1;max-width:190px;display:grid;justify-items:center;gap:8px;padding:10px 8px;text-decoration:none;color:var(--g);font-size:12.5px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;text-align:center;border-right:1px solid #e2e2e2;transition:color .15s}
+.hizli a:last-child{border-right:0}
+.hizli .hi{width:44px;height:44px;border-radius:50%;background:#656565;color:#fff;display:grid;place-items:center;font-size:20px;font-weight:700;transition:background .15s}
+.hizli .hi svg{width:21px;height:21px}
+.hizli a:hover{color:var(--y)}.hizli a:hover .hi{background:var(--z)}
+.btn{border-radius:8px;padding:13px 22px;font-size:14.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-color:var(--z)}
+.btn.primary{background:var(--z);border-color:var(--z);box-shadow:none}.btn.primary:hover{background:var(--y);border-color:var(--y)}
+.btn.ghost{color:var(--y);background:#fff}
+.btn.kucuk{padding:10px 18px;font-size:13px}
+.rozet{border-radius:6px;font-weight:600;letter-spacing:.03em}
+.ustbaslik{color:#d4541e;font-weight:600}
+.hero{background:linear-gradient(180deg,#fff,#ebf7f7)}
+.herogorsel img{border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.12)}
+.yuzen{border-radius:10px}
+.sayfabas{background:#fff;border-bottom:1px solid var(--s);padding:30px 0 14px;text-align:center}
+.sayfabas h1{text-transform:uppercase;letter-spacing:.06em;font-size:clamp(22px,3vw,32px)}
+.sayfabas .lead{margin-left:auto;margin-right:auto}
+.card,.adimlar li,details,.tik.buyuk li,.tablo,.sertkart{border-radius:10px;box-shadow:none}
+.card.ikon>svg{border-radius:50%;background:#656565;color:#fff}
+.adimlar li>span{background:var(--z);font-family:"Montserrat",sans-serif;font-weight:700}
+.bio{border-radius:12px;background:#fff;box-shadow:none}
+.bio .unvan{color:var(--y)}
+.avatar.mono{background:linear-gradient(135deg,var(--z),#2a9aa0);font-family:"Montserrat",sans-serif;font-weight:700}
+.formkart{background:#2d2c2c;border-radius:12px}.formkart form{border-radius:10px}
+.formkart .tik svg{color:var(--z)}
+input,select{border-radius:8px}
+.tanitim img,.gorsel img{border-radius:12px;box-shadow:none}
+.uyebant{border-radius:10px;border-width:1px}
+footer{background:#2d2c2c;color:#cfcfcf}.yasal{color:#9a9a9a}
+.alt .k{background:var(--z)}.alt .a{background:#2d2c2c}
+/* ürün kartları ve filtre */
+.urunler{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.urun{border-radius:8px;padding:12px 12px 14px;gap:4px;align-content:start}
+.urun .ug{background:#fff;height:210px;border-radius:6px;padding:8px}
+.urun img{max-height:190px;height:auto}
+.urun small{color:var(--m);font-weight:700;letter-spacing:.02em;text-transform:none;font-size:12px}
+.urun b{font-size:12.8px;font-weight:500;color:#555;line-height:1.35;min-height:52px}
+.fy{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.fy s{color:#9a9a9a;font-size:12.5px}.fy em{font-style:normal;color:var(--y);font-weight:700;font-size:16px}
+.sbtn{margin-top:8px;background:var(--acik);color:var(--y);text-align:center;padding:9px;border-radius:6px;font-weight:600;font-size:13.5px;transition:background .15s,color .15s}
+.urun:hover .sbtn{background:var(--z);color:#fff}
+.filtre{padding:12px 0;display:grid;gap:10px}
+.filtre input{border-radius:8px;border:1px solid #ddd;padding:12px 14px}
+.cipler{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.cipler::-webkit-scrollbar{display:none}
+.cipler button{flex:none;font:600 13px "Montserrat",sans-serif;padding:8px 14px;border-radius:99px;border:1px solid #d9d9d9;background:#fff;color:var(--g);cursor:pointer}
+.cipler button.sec{background:var(--z);border-color:var(--z);color:#fff}
+.sayac{font-size:13.5px;color:var(--g);margin:0}
+@media(max-width:860px){
+  header .ic{justify-content:space-between}.hlogo{height:42px}
+  header .btn.kucuk{display:inline-flex;order:2}nav{order:3;justify-content:flex-start;gap:4px 18px}
+  .serit{font-size:11.5px;letter-spacing:.04em;padding:10px}
+  .hizli .ic{justify-content:flex-start;overflow-x:auto;scrollbar-width:none;padding-left:8px;padding-right:8px}.hizli .ic::-webkit-scrollbar{display:none}
+  .hizli a{flex:none;width:96px;font-size:10.5px;padding:8px 4px}
+  .urunler{grid-template-columns:repeat(2,1fr);gap:8px}.urun .ug{height:150px}.urun img{max-height:134px}.urun b{min-height:66px}
 }
 `;
 

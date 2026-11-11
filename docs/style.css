@@ -147,3 +147,80 @@ footer a{color:#fff;text-decoration:none;display:block;padding:2px 0}footer a:ho
   .bio{grid-template-columns:1fr;text-align:center;justify-items:center;padding:24px 20px}
   .fgrid{grid-template-columns:1fr}.bolum{margin:48px 0}
 }
+
+/* ---- Homm sitesi görünümü ---- */
+:root{--y:#2a9aa0;--y2:#50b6bb;--z:#50b6bb;--acik:#ebf7f7;--k:#f9f9f9;--m:#2d2c2c;--g:#656565;--s:#e8e8e8;--altin:#d4541e;--r:10px}
+body{font:16px/1.65 "Open Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--k)}
+h1,h2,h3,.fmarka,nav a,.btn,.serit,.hizli a,.ustbaslik,.rozet{font-family:"Montserrat","Open Sans",Arial,sans-serif}
+h1{font-size:clamp(26px,3.8vw,42px);color:var(--m);font-weight:700;letter-spacing:.01em;line-height:1.18}
+h1 em{font-style:normal;color:var(--z)}
+h2{font-size:clamp(20px,2.3vw,26px);color:var(--m);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+h3{color:var(--m);font-weight:600;font-size:16.5px}
+.lead{font-size:17.5px;color:#4a4a4a}
+.ust{background:#2d2c2c;color:#f1f1f1;font-size:12.5px;padding:8px 0;text-align:center}.ust b{color:#fff}
+header{background:#fff;backdrop-filter:none;border-bottom:0}
+header .ic{max-width:1320px;padding-top:14px;padding-bottom:14px;gap:10px 26px}
+.hlogo{height:54px}
+nav{justify-content:center;gap:4px 26px;font-size:13.5px}
+nav a{font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--m);padding:6px 0;border-bottom:3px solid transparent}
+nav a:hover{color:var(--z);border-color:transparent}
+nav a[aria-current]{color:#d4541e;font-style:italic;border-image:linear-gradient(90deg,#d4541e,#f0a23a,#50b6bb) 1}
+.htel svg{background:var(--z)}
+.serit{background:var(--z);color:#fff;text-align:center;padding:13px 16px;font-size:15px;font-weight:500;letter-spacing:.08em}
+.hizli{background:#f4f4f4;border-bottom:1px solid var(--s)}
+.hizli .ic{display:flex;justify-content:center;max-width:1320px;padding-top:10px;padding-bottom:10px}
+.hizli a{flex:1;max-width:190px;display:grid;justify-items:center;gap:8px;padding:10px 8px;text-decoration:none;color:var(--g);font-size:12.5px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;text-align:center;border-right:1px solid #e2e2e2;transition:color .15s}
+.hizli a:last-child{border-right:0}
+.hizli .hi{width:44px;height:44px;border-radius:50%;background:#656565;color:#fff;display:grid;place-items:center;font-size:20px;font-weight:700;transition:background .15s}
+.hizli .hi svg{width:21px;height:21px}
+.hizli a:hover{color:var(--y)}.hizli a:hover .hi{background:var(--z)}
+.btn{border-radius:8px;padding:13px 22px;font-size:14.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-color:var(--z)}
+.btn.primary{background:var(--z);border-color:var(--z);box-shadow:none}.btn.primary:hover{background:var(--y);border-color:var(--y)}
+.btn.ghost{color:var(--y);background:#fff}
+.btn.kucuk{padding:10px 18px;font-size:13px}
+.rozet{border-radius:6px;font-weight:600;letter-spacing:.03em}
+.ustbaslik{color:#d4541e;font-weight:600}
+.hero{background:linear-gradient(180deg,#fff,#ebf7f7)}
+.herogorsel img{border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.12)}
+.yuzen{border-radius:10px}
+.sayfabas{background:#fff;border-bottom:1px solid var(--s);padding:30px 0 14px;text-align:center}
+.sayfabas h1{text-transform:uppercase;letter-spacing:.06em;font-size:clamp(22px,3vw,32px)}
+.sayfabas .lead{margin-left:auto;margin-right:auto}
+.card,.adimlar li,details,.tik.buyuk li,.tablo,.sertkart{border-radius:10px;box-shadow:none}
+.card.ikon>svg{border-radius:50%;background:#656565;color:#fff}
+.adimlar li>span{background:var(--z);font-family:"Montserrat",sans-serif;font-weight:700}
+.bio{border-radius:12px;background:#fff;box-shadow:none}
+.bio .unvan{color:var(--y)}
+.avatar.mono{background:linear-gradient(135deg,var(--z),#2a9aa0);font-family:"Montserrat",sans-serif;font-weight:700}
+.formkart{background:#2d2c2c;border-radius:12px}.formkart form{border-radius:10px}
+.formkart .tik svg{color:var(--z)}
+input,select{border-radius:8px}
+.tanitim img,.gorsel img{border-radius:12px;box-shadow:none}
+.uyebant{border-radius:10px;border-width:1px}
+footer{background:#2d2c2c;color:#cfcfcf}.yasal{color:#9a9a9a}
+.alt .k{background:var(--z)}.alt .a{background:#2d2c2c}
+/* ürün kartları ve filtre */
+.urunler{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.urun{border-radius:8px;padding:12px 12px 14px;gap:4px;align-content:start}
+.urun .ug{background:#fff;height:210px;border-radius:6px;padding:8px}
+.urun img{max-height:190px;height:auto}
+.urun small{color:var(--m);font-weight:700;letter-spacing:.02em;text-transform:none;font-size:12px}
+.urun b{font-size:12.8px;font-weight:500;color:#555;line-height:1.35;min-height:52px}
+.fy{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.fy s{color:#9a9a9a;font-size:12.5px}.fy em{font-style:normal;color:var(--y);font-weight:700;font-size:16px}
+.sbtn{margin-top:8px;background:var(--acik);color:var(--y);text-align:center;padding:9px;border-radius:6px;font-weight:600;font-size:13.5px;transition:background .15s,color .15s}
+.urun:hover .sbtn{background:var(--z);color:#fff}
+.filtre{padding:12px 0;display:grid;gap:10px}
+.filtre input{border-radius:8px;border:1px solid #ddd;padding:12px 14px}
+.cipler{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.cipler::-webkit-scrollbar{display:none}
+.cipler button{flex:none;font:600 13px "Montserrat",sans-serif;padding:8px 14px;border-radius:99px;border:1px solid #d9d9d9;background:#fff;color:var(--g);cursor:pointer}
+.cipler button.sec{background:var(--z);border-color:var(--z);color:#fff}
+.sayac{font-size:13.5px;color:var(--g);margin:0}
+@media(max-width:860px){
+  header .ic{justify-content:space-between}.hlogo{height:42px}
+  header .btn.kucuk{display:inline-flex;order:2}nav{order:3;justify-content:flex-start;gap:4px 18px}
+  .serit{font-size:11.5px;letter-spacing:.04em;padding:10px}
+  .hizli .ic{justify-content:flex-start;overflow-x:auto;scrollbar-width:none;padding-left:8px;padding-right:8px}.hizli .ic::-webkit-scrollbar{display:none}
+  .hizli a{flex:none;width:96px;font-size:10.5px;padding:8px 4px}
+  .urunler{grid-template-columns:repeat(2,1fr);gap:8px}.urun .ug{height:150px}.urun img{max-height:134px}.urun b{min-height:66px}
+}
