@@ -385,7 +385,7 @@ ${form('Başvurunuzu bırakın')}
 ${cta}
 ${form()}` },
 
-{ path: 'kazanc-plani/', title: `Homm Bitkisel Kazanç Planı Nasıl İşler? | ${EKIP} · ${AD}`,
+{ path: 'kazanc-plani/', genis: true, title: `Homm Bitkisel Kazanç Planı Nasıl İşler? | ${EKIP} · ${AD}`,
   desc: `Homm Bitkisel kazanç planı: perakende satış kârı, ciro puanı (CP), aktiflik puanı (AP) ve kariyer basamakları. ${KARIYER} lider ${AD} anlatıyor.`,
   h1: 'Homm Bitkisel Kazanç Planı',
   lead: 'Homm Bitkisel\'de kazanç üç kaynaktan oluşur: kendi satışınız, ekibinizin cirosu ve ulaştığınız kariyer.',
@@ -402,11 +402,15 @@ ${form()}` },
   <tr><td><b>AP</b> (Aktiflik Puanı)</td><td>O dönem aktif sayılmanız için kendi alışverişinizle doldurmanız gereken puandır.</td></tr>
   <tr><td><b>Kariyer</b></td><td>Toplam cironuza göre ulaştığınız basamaktır. ${AD} bu basamaklardan <b>${KARIYER}</b> kariyerindedir.</td></tr>
 </table></div>
-<h2>Güncel kazanç tablosu</h2>
-<p>Kariyer basamaklarının güncel CP şartlarını ve prim oranlarını gösteren şirket tablosunu sizinle birebir paylaşıyor, kendi hedefinize göre üzerinden birlikte geçiyoruz.</p>
+<h2>Güncel kazanç planı tablosu</h2>
+<p>Homm Life Türkiye Kazanç Planı, Eylül–Aralık 2026 dönemi (31.12.2026 tarihine kadar geçerli). Büyütmek için tablonun üzerine dokunun.</p>
+<a class="plan" href="${P}img/kazanc-plani-2026.jpg" target="_blank"><img src="${P}img/kazanc-plani-2026.jpg" alt="Homm Life Türkiye Kazanç Planı Eylül–Aralık 2026: kariyer basamakları, ciro puanları, liderlik ve saha destek gelirleri" width="1280" height="551" loading="lazy"></a>
+<p class="not">Tablo Homm Bitkisel'e aittir. Telefonda yana kaydırarak tamamını görebilirsiniz.</p>
+<h2>Tabloyu birlikte okuyalım</h2>
+<p>Hangi kariyere hangi ciroyla ulaşılır, sizin hedefinize göre nereden başlanır; telefonda birebir anlatıyoruz.</p>
 <div class="cta">
-  <a class="btn primary" href="${WA('Merhaba, Homm Bitkisel güncel kazanç tablosunu almak istiyorum.')}" rel="nofollow noopener" target="_blank">Güncel Tabloyu WhatsApp'tan İste</a>
-  <a class="btn ghost" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Üye Ol</a>
+  <a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Üye Ol</a>
+  <a class="btn ghost" href="${WA('Merhaba, Homm Bitkisel kazanç planı hakkında bilgi almak istiyorum.')}" rel="nofollow noopener" target="_blank">WhatsApp'tan Sor</a>
 </div>
 <p class="not">Kazanç kişinin çalışmasına, satışına ve ekibine bağlıdır; garanti edilen bir gelir yoktur.</p>
 ${form('Kazanç planını telefonda anlatalım')}` },
@@ -752,6 +756,7 @@ input,select{border-radius:8px}
 .uyebant{border-radius:10px;border-width:1px}
 footer{background:#2d2c2c;color:#cfcfcf}.yasal{color:#9a9a9a}
 .alt .k{background:var(--z)}.alt .a{background:#2d2c2c}
+.plan{display:block;overflow-x:auto;border:1px solid var(--s);border-radius:10px;background:#fff;margin:14px 0}.plan img{min-width:980px;width:100%;max-width:none}
 /* ürün kartları ve filtre */
 .urunler{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
 .urun{border-radius:8px;padding:12px 12px 14px;gap:4px;align-content:start}
