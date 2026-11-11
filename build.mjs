@@ -110,6 +110,7 @@ const bioKart = `
 
 const sss = [
   ['Homm Bitkisel üyelik ücretli mi?', 'Hayır. Kayıt olurken giriş ücreti veya sermaye istenmez. Bu sitede size yapılan yönlendirme ve telefon desteği de ücretsizdir.'],
+  ['Üye olunca ürünleri indirimli alır mıyım?', 'Evet. Üye olduktan sonra ürünleri, üye olmadan alınan fiyata göre %30 indirimli alırsınız. Bu indirim hem Temsilci hem Ayrıcalıklı Müşteri üyeliğinde geçerlidir.'],
   ['Homm Bitkisel’e kimler üye olabilir?', 'Bağımsız temsilci olmak için 18 yaşını doldurmuş olmanız yeterlidir. Yalnızca alışveriş yapmak isteyenler kayıt formunda “Ayrıcalıklı Müşteri” seçeneğini işaretler.'],
   ['Temsilci ile Ayrıcalıklı Müşteri arasındaki fark nedir?', 'Temsilci hem alışveriş yapar hem de ürün satışı ve ekip kurma yoluyla kazanç elde edebilir. Ayrıcalıklı Müşteri yalnızca kendi alışverişini yapar; satış yapma zorunluluğu yoktur.'],
   ['Satış yapmak zorunda mıyım?', 'Hayır. İsterseniz yalnızca kendi ihtiyaçlarınız için alışveriş yapabilirsiniz.'],
@@ -126,25 +127,25 @@ const sssHtml = (list) => `<div class="sss">${list.map(([q, a]) => `<details><su
 
 const pages = [
 { path: '', title: `Homm Bitkisel Üyelik – Ücretsiz Üye Ol | ${EKIP} · ${AD}`,
-  desc: `Homm Bitkisel’e ücretsiz üye olun. ${KARIYER} lider ${AD} ve ${EKIP}; kayıt, temsilcilik ve ayrıcalıklı müşteri üyeliğinde birebir ücretsiz destek veriyor.`,
+  desc: `Homm Bitkisel’e ücretsiz üye olun, ürünleri %30 indirimli alın. ${KARIYER} lider ${AD} ve ${EKIP}; kayıt, temsilcilik ve ayrıcalıklı müşteri üyeliğinde birebir ücretsiz destek veriyor.`,
   h1: 'Homm Bitkisel Üyelik',
   hero: `
 <section class="hero"><div class="ic heroic">
   <div>
     <span class="rozet">${EKIP} · Homm Bitkisel Bağımsız Temsilcisi</span>
     <h1>Homm Bitkisel'e <em>ücretsiz</em> üye olun, ilk günden yalnız kalmayın</h1>
-    <p class="lead">Ben ${KARIYER} lider <b>${AD}</b>. İster yalnızca indirimli alışveriş yapın, ister kendi işinizi kurun; kayıt formunu birlikte dolduralım, ilk adımları ekibimle birlikte atın.</p>
+    <p class="lead">Ben ${KARIYER} lider <b>${AD}</b>. Üye olun, ürünleri <b>%30 indirimli</b> alın. İster yalnızca alışveriş yapın, ister kendi işinizi kurun; kayıt formunu birlikte dolduralım, ilk adımları ekibimle birlikte atın.</p>
     <div class="cta">
       <a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Kayıt Ol</a>
       <a class="btn ghost" href="#form">Beni Arayın</a>
     </div>
     <ul class="cip">
-      <li>${ik.onay}Giriş ücreti yok</li><li>${ik.onay}Satış zorunluluğu yok</li><li>${ik.onay}Birebir destek</li>
+      <li>${ik.onay}Üyelere %30 indirim</li><li>${ik.onay}Giriş ücreti yok</li><li>${ik.onay}Satış zorunluluğu yok</li><li>${ik.onay}Birebir destek</li>
     </ul>
   </div>
   <div class="herogorsel">
     <img src="${P}img/hero.jpg" alt="Bitkisel cilt bakım ürünü tutan gülümseyen kadın" width="896" height="1120" fetchpriority="high">
-    <div class="yuzen"><b>3 adımda üyelik</b><span>Formu doldurun · onaylayın · başlayın</span></div>
+    <div class="yuzen"><b>Üyelere %30 indirim</b><span>Üye olmadan alınan fiyata göre</span></div>
   </div>
 </div></section>`,
   body: `
@@ -152,7 +153,7 @@ const pages = [
   <div>
     <p class="ustbaslik">Homm Bitkisel nedir?</p>
     <h2>Doğrudan satışla çalışan bitkisel ürünler markası</h2>
-    <p>Homm Bitkisel; kişisel bakım, kozmetik, ev temizliği ve gıda kategorilerinde ürünler sunan bir doğrudan satış şirketidir. Üyeler ürünleri kendi hesaplarından sipariş eder; dileyen çevresine önererek ve ekip kurarak ek gelir fırsatı oluşturur.</p>
+    <p>Homm Bitkisel; kişisel bakım, kozmetik, ev temizliği ve gıda kategorilerinde ürünler sunan bir doğrudan satış şirketidir. Üyeler ürünleri kendi hesaplarından, üye olmayanlara göre <b>%30 indirimli</b> sipariş eder; dileyen çevresine önererek ve ekip kurarak ek gelir fırsatı oluşturur.</p>
     <p>İster yalnızca alışveriş yapmak için katılın, ister satış ve ekip çalışmasıyla ilerleyin; ${EKIP} iki yolda da yanınızda.</p>
     <a class="btn ghost" href="${P}hakkimizda/">Hakkımızda</a>
   </div>
@@ -164,7 +165,7 @@ const pages = [
   <h2>Üyelikte sizi neler bekliyor?</h2>
   <div class="grid3">
     <div class="card ikon">${ik.hediye}<h3>Ücretsiz üyelik</h3><p>Kayıtta giriş ücreti veya sermaye istenmez.</p></div>
-    <div class="card ikon">${ik.sepet}<h3>Üyeye özel alışveriş</h3><p>Ürünleri kendi hesabınızdan, üye avantajlarıyla sipariş edersiniz.</p></div>
+    <div class="card ikon">${ik.sepet}<h3>%30 üye indirimi</h3><p>Üye olduktan sonra ürünleri, üye olmadan alınan fiyata göre %30 indirimli alırsınız.</p></div>
     <div class="card ikon">${ik.ev}<h3>Evden çalışma</h3><p>Telefonunuzla, kendi saatlerinizde çalışırsınız.</p></div>
     <div class="card ikon">${ik.egitim}<h3>Eğitim</h3><p>Panel, sipariş ve ürün bilgisi eğitimlerine katılırsınız.</p></div>
     <div class="card ikon">${ik.ekip}<h3>Ekip desteği</h3><p>${EKIP}'te soru sorabileceğiniz bir ekip sizi bekler.</p></div>
@@ -193,14 +194,14 @@ ${bioKart}
       <span class="rozet">Kazanç + Alışveriş</span>
       <h3>Temsilci</h3>
       <p>Ürünleri kendiniz kullanır, çevrenize ve internetten satar, dilerseniz kendi ekibinizi kurarsınız.</p>
-      <ul class="tik"><li>${ik.onay}Alışveriş</li><li>${ik.onay}Satış ve kazanç</li><li>${ik.onay}Ekip kurma</li></ul>
+      <ul class="tik"><li>${ik.onay}%30 indirimli alışveriş</li><li>${ik.onay}Satış ve kazanç</li><li>${ik.onay}Ekip kurma</li></ul>
       <a href="${P}homm-bitkisel-temsilci-ol/">Temsilcilik şartları →</a>
     </div>
     <div class="card secenek">
       <span class="rozet">Sadece Alışveriş</span>
       <h3>Ayrıcalıklı Müşteri</h3>
       <p>Satış yapmadan, yalnızca kendi ihtiyaçlarınız için alışveriş yaparsınız.</p>
-      <ul class="tik"><li>${ik.onay}Alışveriş</li><li>${ik.onay}Satış zorunluluğu yok</li><li>${ik.onay}Sade ve hızlı kayıt</li></ul>
+      <ul class="tik"><li>${ik.onay}%30 indirimli alışveriş</li><li>${ik.onay}Satış zorunluluğu yok</li><li>${ik.onay}Sade ve hızlı kayıt</li></ul>
       <a href="${P}ayricalikli-musteri/">Ayrıcalıklı Müşteri nedir? →</a>
     </div>
   </div>
@@ -209,6 +210,7 @@ ${bioKart}
 <section class="bolum">
   <p class="ustbaslik">Ürünler</p>
   <h2>Öne çıkan Homm ürünleri</h2>
+  <p class="indirim"><b>%30</b><span>Üye olduğunuzda bu ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız.</span></p>
   ${urunGrid([0, 1, 2, 6, 7, 10, 11, 14].map(i => urunler[i]))}
   <p><a class="btn ghost" href="${P}homm-bitkisel-urunleri/">Tüm ürün kategorilerini görün</a></p>
 </section>
@@ -218,7 +220,7 @@ ${form()}
 <section class="bolum">
   <p class="ustbaslik">Merak edilenler</p>
   <h2>Sık sorulan sorular</h2>
-  ${sssHtml(sss.slice(0, 6))}
+  ${sssHtml(sss.slice(0, 7))}
   <p><a href="${P}sik-sorulan-sorular/">Tüm soruları görün →</a></p>
 </section>` },
 
@@ -277,13 +279,14 @@ ${bioKart}
 ${form('Temsilcilik hakkında sizi arayalım')}` },
 
 { path: 'ayricalikli-musteri/', title: `Homm Bitkisel Ayrıcalıklı Müşteri Üyeliği Nedir? | ${AD}`,
-  desc: `Satış yapmadan yalnızca alışveriş yapmak isteyenler için Homm Bitkisel Ayrıcalıklı Müşteri üyeliği: nedir, nasıl kayıt olunur, temsilcilikten farkı ne?`,
+  desc: `Satış yapmadan, ürünleri %30 indirimli almak isteyenler için Homm Bitkisel Ayrıcalıklı Müşteri üyeliği: nedir, nasıl kayıt olunur, temsilcilikten farkı ne?`,
   h1: 'Homm Bitkisel Ayrıcalıklı Müşteri Üyeliği',
   lead: 'Satış yapmak ya da ekip kurmak istemiyor, yalnızca ürünleri kendiniz için almak mı istiyorsunuz? Kayıt formundaki Ayrıcalıklı Müşteri seçeneği bunun için var.',
   body: `
 ${cta}
 <h2>Ayrıcalıklı Müşteri kimdir?</h2>
 <p>Ayrıcalıklı Müşteri, Homm Bitkisel'e yalnızca alışveriş amacıyla üye olan kişidir. Satış yapma zorunluluğu yoktur. Siparişlerinizi resmi site üzerinden kendi hesabınızla verirsiniz.</p>
+<p class="indirim"><b>%30</b><span>Üye olduktan sonra ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız.</span></p>
 <h2>Nasıl kayıt olunur?</h2>
 <ol class="adimlar">
   <li><span>1</span><div><h3>Kayıt bağlantısını açın</h3><p>Bu sayfadaki “Hemen Ücretsiz Kayıt Ol” butonunu kullanın.</p></div></li>
@@ -294,6 +297,7 @@ ${cta}
 <div class="tablo"><table>
   <tr><th></th><th>Temsilci</th><th>Ayrıcalıklı Müşteri</th></tr>
   <tr><td>Alışveriş</td><td>Evet</td><td>Evet</td></tr>
+  <tr><td>%30 üye indirimi</td><td>Evet</td><td>Evet</td></tr>
   <tr><td>Satış ve kazanç</td><td>Evet</td><td>Hayır</td></tr>
   <tr><td>Ekip kurma</td><td>Evet</td><td>Hayır</td></tr>
   <tr><td>Satış zorunluluğu</td><td>Yok</td><td>Yok</td></tr>
@@ -307,10 +311,11 @@ ${form()}` },
   lead: 'Homm Bitkisel\'in ürün yelpazesi kişisel bakımdan ev temizliğine uzanır. Güncel ürünler, içerikler ve fiyatlar için tek doğru kaynak şirketin resmi kataloğudur.',
   body: `
 ${['Cilt Bakımı', 'Saç ve Kişisel Bakım', 'Ev Temizliği', 'Kahve ve İçecek'].map(k => `<h2>${k}</h2>${urunGrid(urunler.filter(u => u[3] === k))}`).join('')}
+<p class="indirim"><b>%30</b><span>Üye olduğunuzda ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız. Üyelik ücretsizdir.</span></p>
 <p>Burada yalnızca bir seçki var; katalogda 350'den fazla ürün bulunuyor.</p>
 <p><a class="btn ghost" href="${URUN_URL}" rel="nofollow noopener" target="_blank">Resmi sitede tüm ürünleri ve fiyatları görün</a></p>
 <h2>Nasıl sipariş verilir?</h2>
-<p>Ürünleri almak için önce üye olursunuz. Üyeliğiniz açıldıktan sonra resmi sitedeki hesabınıza girip sepete ekleyerek sipariş verirsiniz. Hangi ürünün size uygun olduğunu sormak isterseniz bize yazın.</p>
+<p>Ürünleri üye olmadan da alabilirsiniz; ancak üye olduğunuzda aynı ürünleri %30 indirimli alırsınız. Üyeliğiniz açıldıktan sonra resmi sitedeki hesabınıza girip sepete ekleyerek sipariş verirsiniz. Hangi ürünün size uygun olduğunu sormak isterseniz bize yazın.</p>
 <p class="not">Ürün görselleri ve adları Homm Bitkisel'in resmi sitesinden alınmıştır; güncel fiyat ve içerik için resmi siteye bakın. Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
 ${cta}
 ${form('Ürünler hakkında bilgi alın')}` },
@@ -530,6 +535,8 @@ header .ic{display:flex;align-items:center;gap:10px 22px;padding-top:10px;paddin
 .urun img{max-height:166px;width:auto;max-width:100%;object-fit:contain}
 .urun small{color:var(--y2);font-weight:700;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
 .urun b{font-size:15.5px;line-height:1.3}.urun i{font-style:normal;color:var(--g);font-size:13.5px}
+.indirim{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#fff4dc,#ffe9b8);border:1px solid #f1d58a;border-radius:16px;padding:12px 18px;margin:14px 0;color:#5a4300;max-width:720px}
+.indirim>b{font-family:"Playfair Display",serif;font-size:32px;color:#c2410c;line-height:1}
 .sert{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--z),var(--y));color:#fff;display:grid;place-items:center;font-family:"Playfair Display",serif;font-size:17px}
 nav{display:flex;gap:2px 14px;font-size:14px;flex:1;flex-wrap:wrap}header .ic{max-width:1320px}
