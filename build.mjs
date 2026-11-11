@@ -335,3 +335,5 @@ const today = new Date().toISOString().slice(0, 10);
 writeFileSync(`${OUT}/sitemap.xml`, `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.filter(p => !p.noindex).map(p => `<url><loc>${BASE}${p.path}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 writeFileSync(`${OUT}/404.html`, layout({ path: '404', noindex: true, title: 'Sayfa bulunamadı', desc: '', h1: 'Sayfa bulunamadı', body: `<p><a href="${P}">Ana sayfaya dönün</a></p>` }));
 console.log(`${pages.length} sayfa üretildi. Google'a açık: ${INDEX}`);
+// Google Search Console sahiplik doğrulaması (silmeyin)
+writeFileSync(`${OUT}/google0ab4c5d791854410.html`, 'google-site-verification: google0ab4c5d791854410.html');
