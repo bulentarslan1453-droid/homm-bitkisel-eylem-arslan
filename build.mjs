@@ -1,28 +1,52 @@
-// Homm Bitkisel bağımsız temsilci sitesi üretici. Çalıştır: node build.mjs
-// INDEX=1 node build.mjs  -> Google'a açık sürüm (şirket onayından sonra)
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+// Homm Bitkisel bağımsız temsilci sitesi üretici.
+// Yayın sürümü:  INDEX=1 node build.mjs   (INDEX olmadan Google'a kapalı üretir)
+// Eylem Arslan'ın fotoğrafı assets/eylem-arslan.jpg olarak konursa otomatik kullanılır.
+import { mkdirSync, writeFileSync, rmSync, existsSync, cpSync } from 'node:fs';
 
 const REPO = 'homm-bitkisel-eylem-arslan';
 const ORIGIN = 'https://bulentarslan1453-droid.github.io';
-const P = `/${REPO}/`; // site kök yolu
+const P = `/${REPO}/`;
 const BASE = ORIGIN + P;
-const INDEX = process.env.INDEX === '1'; // 0: Google'a kapalı demo
+const INDEX = process.env.INDEX === '1';
 const AD = 'Eylem Arslan';
+const EKIP = 'Arslan Ekip';
+const KARIYER = 'Emerald';
 const TEL = '0542 580 62 33', TEL_INT = '905425806233';
 const KAYIT = 'https://www.hommbitkisel.com.tr/yeni-kayit/HOMM903621099';
 const WA = (m) => `https://wa.me/${TEL_INT}?text=${encodeURIComponent(m)}`;
+const WA_GENEL = WA('Merhaba, Homm Bitkisel üyeliği hakkında bilgi almak istiyorum.');
 const OUT = 'docs';
+const FOTO = existsSync('assets/eylem-arslan.jpg');
 
 const nav = [
   ['', 'Üyelik'], ['homm-bitkisel-kayit/', 'Nasıl Kayıt Olunur'], ['homm-bitkisel-temsilci-ol/', 'Temsilci Ol'],
   ['ayricalikli-musteri/', 'Ayrıcalıklı Müşteri'], ['homm-bitkisel-urunleri/', 'Ürünler'],
-  ['sik-sorulan-sorular/', 'Sık Sorulanlar'], ['iletisim/', 'İletişim'],
+  ['eylem-arslan/', 'Eylem Arslan'], ['sik-sorulan-sorular/', 'Sık Sorulanlar'], ['iletisim/', 'İletişim'],
 ];
 
+const ik = {
+  hediye: '<svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 110-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 100-5C13 2 12 7 12 7z"/></svg>',
+  sepet: '<svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>',
+  ekip: '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
+  egitim: '<svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5zM6 12v5c3 3 9 3 12 0v-5"/></svg>',
+  ev: '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2zM9 22V12h6v10"/></svg>',
+  tel: '<svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>',
+  onay: '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>',
+  wa: '<svg viewBox="0 0 24 24" class="dolu"><path fill-rule="evenodd" d="M12 2a10 10 0 00-8.66 15L2 22l5.16-1.3A10 10 0 1012 2zM8.6 7.2c.2 0 .45 0 .6.4l.8 1.9c.08.2.05.4-.05.55l-.7.9c-.1.15-.15.3-.05.5.5.9 1.6 2.1 3.3 2.85.2.1.35.05.48-.08l.8-.95c.15-.18.35-.2.55-.12l1.85.88c.2.1.33.2.36.36.05.5-.15 1.3-.75 1.75-.6.45-1.5.55-2.6.2-2.6-.8-5.2-3.2-6.1-5.7-.4-1.1-.2-2.2.5-2.95.3-.3.6-.5 1-.5z"/></svg>',
+};
+
 const form = (baslik = 'Sizi arayalım') => `
-<section class="card form" id="form">
-  <h2>${baslik}</h2>
-  <p>Adınızı ve numaranızı bırakın; ${AD} veya ekibinden bir bağımsız temsilci sizi arayıp üyelik adımlarında ücretsiz yardımcı olsun.</p>
+<section class="formkart" id="form">
+  <div class="formsol">
+    <span class="rozet">Ücretsiz destek</span>
+    <h2>${baslik}</h2>
+    <p>Adınızı ve numaranızı bırakın; ${AD} veya ${EKIP}'ten bir bağımsız temsilci sizi arayıp üyelik adımlarında ücretsiz yardımcı olsun.</p>
+    <ul class="tik">
+      <li>${ik.onay}Kayıt formunu birlikte doldururuz</li>
+      <li>${ik.onay}Size uygun üyelik türünü seçeriz</li>
+      <li>${ik.onay}“Aramayın” dediğiniz an numaranız silinir</li>
+    </ul>
+  </div>
   <form onsubmit="return gonder(this)">
     <label>Adınız Soyadınız<input name="ad" required minlength="3" autocomplete="name"></label>
     <label>Telefon Numaranız<input name="tel" required type="tel" inputmode="tel" pattern="[0-9 +()]{10,17}" placeholder="05xx xxx xx xx" autocomplete="tel"></label>
@@ -30,7 +54,7 @@ const form = (baslik = 'Sizi arayalım') => `
       <select name="konu"><option>Temsilci olmak istiyorum</option><option>Sadece indirimli alışveriş (Ayrıcalıklı Müşteri)</option><option>Bilgi almak istiyorum</option></select>
     </label>
     <label class="onay"><input type="checkbox" required> <span><a href="${P}kvkk/">KVKK Aydınlatma Metni</a>'ni okudum; bilgilerimin üyelik hakkında aranmam amacıyla işlenmesine ve tarafımla telefon/WhatsApp üzerinden iletişime geçilmesine onay veriyorum.</span></label>
-    <button class="btn wa" type="submit">WhatsApp ile Gönder</button>
+    <button class="btn wa" type="submit">${ik.wa}WhatsApp ile Gönder</button>
     <small>Gönder'e bastığınızda WhatsApp açılır ve mesajınız hazır gelir; yalnızca göndermeniz yeterli.</small>
   </form>
 </section>`;
@@ -42,11 +66,29 @@ const cta = `
 </div>
 <p class="not">Kayıt butonu sizi Homm Bitkisel'in resmi kayıt formuna götürür. Formda “Tavsiye eden” alanında <b>${AD}</b> yazdığını göreceksiniz.</p>`;
 
+const avatar = (cls = '') => FOTO
+  ? `<img class="avatar ${cls}" src="${P}img/eylem-arslan.jpg" alt="${AD} – ${EKIP} kurucu lideri" loading="lazy">`
+  : `<div class="avatar mono ${cls}" role="img" aria-label="${AD}">EA</div>`;
+
+const bioKart = `
+<section class="bio">
+  ${avatar()}
+  <div>
+    <span class="rozet zumrut">◆ ${KARIYER} Lider</span>
+    <h2>${AD}</h2>
+    <p class="unvan">${EKIP} Kurucu Lideri · Homm Bitkisel Bağımsız Temsilcisi</p>
+    <p>${AD}, Homm Bitkisel'de <b>${KARIYER}</b> kariyerine ulaşmış bir bağımsız temsilci ve <b>${EKIP}</b>'in kurucu lideridir. Ekibine katılan herkesle kayıttan ilk siparişe, panel kullanımından ekip kurmaya kadar birebir ilgilenir.</p>
+    <p><a href="${P}eylem-arslan/">Eylem Arslan hakkında daha fazlası →</a></p>
+  </div>
+</section>`;
+
 const sss = [
   ['Homm Bitkisel üyelik ücretli mi?', 'Hayır. Kayıt olurken giriş ücreti veya sermaye istenmez. Bu sitede size yapılan yönlendirme ve telefon desteği de ücretsizdir.'],
   ['Homm Bitkisel’e kimler üye olabilir?', 'Bağımsız temsilci olmak için 18 yaşını doldurmuş olmanız yeterlidir. Yalnızca alışveriş yapmak isteyenler kayıt formunda “Ayrıcalıklı Müşteri” seçeneğini işaretler.'],
   ['Temsilci ile Ayrıcalıklı Müşteri arasındaki fark nedir?', 'Temsilci hem alışveriş yapar hem de ürün satışı ve ekip kurma yoluyla kazanç elde edebilir. Ayrıcalıklı Müşteri yalnızca kendi alışverişini yapar; satış yapma zorunluluğu yoktur.'],
   ['Satış yapmak zorunda mıyım?', 'Hayır. İsterseniz yalnızca kendi ihtiyaçlarınız için alışveriş yapabilirsiniz.'],
+  ['Sistemi bilmiyorum, destek veriliyor mu?', `Evet. ${EKIP}'te kayıttan sonra panel kullanımı, sipariş verme ve ürün bilgisi konusunda birebir destek ve ekip eğitimi veriyoruz.`],
+  ['Evden çalışabilir miyim?', 'Evet. Tanıtım ve satışınızı telefonunuzdan, evinizden yapabilirsiniz; belirli bir mesai saati yoktur.'],
   ['Kayıt ne kadar sürer?', 'Resmi kayıt formunu doldurmak birkaç dakika sürer. Formu gönderdikten sonra telefonunuza gelen sözleşmeyi onayladığınızda üyeliğiniz tanımlanır.'],
   ['Kayıt formunda “Tavsiye eden” neden önemli?', `Tavsiye eden kişi, sisteme girdikten sonra size destek olacak sponsorunuzdur. Bu sitedeki kayıt bağlantısıyla girdiğinizde tavsiye eden olarak ${AD} görünür ve eğitim, sipariş, panel kullanımı gibi konularda ekibimiz size yardımcı olur.`],
   ['Ne kadar kazanırım?', 'Kazanç tamamen sizin çalışmanıza, satışınıza ve ekibinize bağlıdır. Garanti edilen bir gelir yoktur; kimseye sabit kazanç sözü vermiyoruz.'],
@@ -54,51 +96,111 @@ const sss = [
   ['Bu site Homm Bitkisel’in resmi sitesi mi?', `Hayır. Bu site Homm Bitkisel bağımsız temsilcisi ${AD} tarafından hazırlanmış bir bilgilendirme sayfasıdır. Şirketin resmi sitesi hommbitkisel.com.tr, müşteri hizmetleri numarası 444 77 97’dir.`],
   ['Numaramı bırakırsam ne olur?', `Yalnızca üyelik hakkında bilgi vermek için ${AD} veya ekibindeki bir bağımsız temsilci tarafından aranırsınız. Aranmak istemediğinizi söylediğiniz anda numaranız silinir.`],
 ];
-const sssHtml = (list) => list.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('');
+const sssHtml = (list) => `<div class="sss">${list.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>`;
 
 const pages = [
-{ path: '', title: `Homm Bitkisel Üyelik – Ücretsiz Üye Ol | Bağımsız Temsilci ${AD}`,
-  desc: `Homm Bitkisel’e ücretsiz üye olmak için adım adım rehber. Bağımsız temsilci ${AD} kayıt, temsilcilik ve ayrıcalıklı müşteri üyeliğinde ücretsiz destek veriyor.`,
-  h1: 'Homm Bitkisel Üyelik: Ücretsiz Üye Olun',
+{ path: '', title: `Homm Bitkisel Üyelik – Ücretsiz Üye Ol | ${EKIP} · ${AD}`,
+  desc: `Homm Bitkisel’e ücretsiz üye olun. ${KARIYER} lider ${AD} ve ${EKIP}; kayıt, temsilcilik ve ayrıcalıklı müşteri üyeliğinde birebir ücretsiz destek veriyor.`,
+  h1: 'Homm Bitkisel Üyelik',
+  hero: `
+<section class="hero"><div class="ic heroic">
+  <div>
+    <span class="rozet">${EKIP} · Homm Bitkisel Bağımsız Temsilcisi</span>
+    <h1>Homm Bitkisel'e <em>ücretsiz</em> üye olun, ilk günden yalnız kalmayın</h1>
+    <p class="lead">Ben ${KARIYER} lider <b>${AD}</b>. İster yalnızca indirimli alışveriş yapın, ister kendi işinizi kurun; kayıt formunu birlikte dolduralım, ilk adımları ekibimle birlikte atın.</p>
+    <div class="cta">
+      <a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Kayıt Ol</a>
+      <a class="btn ghost" href="#form">Beni Arayın</a>
+    </div>
+    <ul class="cip">
+      <li>${ik.onay}Giriş ücreti yok</li><li>${ik.onay}Satış zorunluluğu yok</li><li>${ik.onay}Birebir destek</li>
+    </ul>
+  </div>
+  <div class="herogorsel">
+    <img src="${P}img/hero.jpg" alt="Bitkisel cilt bakım ürünü tutan gülümseyen kadın" width="896" height="1120" fetchpriority="high">
+    <div class="yuzen"><b>3 adımda üyelik</b><span>Formu doldurun · onaylayın · başlayın</span></div>
+  </div>
+</div></section>`,
   body: `
-<p class="lead">Homm Bitkisel'e (Homm Life) üye olmak istiyor ama nereden başlayacağınızı bilmiyor musunuz? Ben bağımsız temsilci <b>${AD}</b>. Kayıt formunu birlikte dolduralım, aklınızdaki soruları yanıtlayayım.</p>
-${cta}
-<div class="grid3">
-  <div class="card"><h3>Ücretsiz</h3><p>Kayıtta giriş ücreti veya sermaye istenmez.</p></div>
-  <div class="card"><h3>İki seçenek</h3><p>Temsilci olun ya da yalnızca alışveriş yapan Ayrıcalıklı Müşteri olun.</p></div>
-  <div class="card"><h3>Birebir destek</h3><p>Kayıttan sonra panel, sipariş ve eğitimde ekibimiz yanınızda.</p></div>
-</div>
-<h2>Homm Bitkisel üyeliği nasıl çalışır?</h2>
-<p>Homm Bitkisel, bitkisel içerikli kişisel bakım ve ev temizliği ürünlerini bağımsız temsilciler aracılığıyla satan bir doğrudan satış şirketidir. Üyelik iki şekilde açılır:</p>
-<ul>
-  <li><a href="${P}homm-bitkisel-temsilci-ol/"><b>Temsilci üyeliği</b></a>: hem alışveriş yapar hem de satış ve ekip kurma yoluyla kazanç elde edebilirsiniz.</li>
-  <li><a href="${P}ayricalikli-musteri/"><b>Ayrıcalıklı Müşteri üyeliği</b></a>: yalnızca kendi alışverişinizi yaparsınız, satış zorunluluğu yoktur.</li>
-</ul>
-<h2>3 adımda üye olun</h2>
-<ol class="adim">
-  <li><b>Kayıt bağlantısını açın.</b> Resmi kayıt formunda “Tavsiye eden: ${AD}” yazdığını kontrol edin.</li>
-  <li><b>Üyelik türünü seçin ve formu doldurun.</b> Telefon, e-posta ve kişisel bilgilerinizi girin.</li>
-  <li><b>Telefonunuza gelen sözleşmeyi onaylayın.</b> Üyeliğiniz tanımlanır, biz de sizi arayıp ilk adımları anlatırız.</li>
-</ol>
-<p>Ayrıntılı anlatım için <a href="${P}homm-bitkisel-kayit/">Homm Bitkisel'e nasıl kayıt olunur</a> sayfasına bakın.</p>
+<section class="bolum">
+  <p class="ustbaslik">Neden bu ekip?</p>
+  <h2>Üyelikte sizi neler bekliyor?</h2>
+  <div class="grid3">
+    <div class="card ikon">${ik.hediye}<h3>Ücretsiz üyelik</h3><p>Kayıtta giriş ücreti veya sermaye istenmez.</p></div>
+    <div class="card ikon">${ik.sepet}<h3>Üyeye özel alışveriş</h3><p>Ürünleri kendi hesabınızdan, üye avantajlarıyla sipariş edersiniz.</p></div>
+    <div class="card ikon">${ik.ev}<h3>Evden çalışma</h3><p>Telefonunuzla, kendi saatlerinizde çalışırsınız.</p></div>
+    <div class="card ikon">${ik.egitim}<h3>Eğitim</h3><p>Panel, sipariş ve ürün bilgisi eğitimlerine katılırsınız.</p></div>
+    <div class="card ikon">${ik.ekip}<h3>Ekip desteği</h3><p>${EKIP}'te soru sorabileceğiniz bir ekip sizi bekler.</p></div>
+    <div class="card ikon">${ik.tel}<h3>Birebir ilgi</h3><p>Takıldığınız her yerde bir telefon uzağınızdayız.</p></div>
+  </div>
+</section>
+
+${bioKart}
+
+<section class="bolum">
+  <p class="ustbaslik">Nasıl başlanır?</p>
+  <h2>3 adımda üye olun</h2>
+  <ol class="adimlar">
+    <li><span>1</span><div><h3>Kayıt bağlantısını açın</h3><p>Resmi kayıt formunda “Tavsiye eden: ${AD}” yazdığını kontrol edin.</p></div></li>
+    <li><span>2</span><div><h3>Üyelik türünü seçin</h3><p>Temsilci ya da Ayrıcalıklı Müşteri'yi seçip iletişim ve kişisel bilgilerinizi girin.</p></div></li>
+    <li><span>3</span><div><h3>Sözleşmeyi onaylayın</h3><p>Telefonunuza gelen sözleşmeyi onaylayın; üyeliğiniz tanımlanır, biz de sizi ararız.</p></div></li>
+  </ol>
+  <p><a href="${P}homm-bitkisel-kayit/">Kayıt formunun adım adım anlatımı →</a></p>
+</section>
+
+<section class="bolum">
+  <p class="ustbaslik">Size hangisi uygun?</p>
+  <h2>İki üyelik seçeneği</h2>
+  <div class="ikili">
+    <div class="card secenek">
+      <span class="rozet">Kazanç + Alışveriş</span>
+      <h3>Temsilci</h3>
+      <p>Ürünleri kendiniz kullanır, çevrenize ve internetten satar, dilerseniz kendi ekibinizi kurarsınız.</p>
+      <ul class="tik"><li>${ik.onay}Alışveriş</li><li>${ik.onay}Satış ve kazanç</li><li>${ik.onay}Ekip kurma</li></ul>
+      <a href="${P}homm-bitkisel-temsilci-ol/">Temsilcilik şartları →</a>
+    </div>
+    <div class="card secenek">
+      <span class="rozet">Sadece Alışveriş</span>
+      <h3>Ayrıcalıklı Müşteri</h3>
+      <p>Satış yapmadan, yalnızca kendi ihtiyaçlarınız için alışveriş yaparsınız.</p>
+      <ul class="tik"><li>${ik.onay}Alışveriş</li><li>${ik.onay}Satış zorunluluğu yok</li><li>${ik.onay}Sade ve hızlı kayıt</li></ul>
+      <a href="${P}ayricalikli-musteri/">Ayrıcalıklı Müşteri nedir? →</a>
+    </div>
+  </div>
+</section>
+
+<section class="bant">
+  <img src="${P}img/urunler.jpg" alt="Bitkisel bakım ürünleri ve şifalı bitkiler" loading="lazy" width="1100" height="733">
+  <div>
+    <p class="ustbaslik">Ürünler</p>
+    <h2>Kişisel bakımdan ev temizliğine</h2>
+    <p>Homm Bitkisel; cilt ve saç bakımı, kişisel bakım, ev temizliği, anne-bebek ve içecek kategorilerinde bitkisel içerikli ürünler sunar.</p>
+    <a class="btn ghost" href="${P}homm-bitkisel-urunleri/">Ürün kategorilerini görün</a>
+  </div>
+</section>
+
 ${form()}
-<h2>Sık sorulan sorular</h2>
-${sssHtml(sss.slice(0, 5))}
-<p><a href="${P}sik-sorulan-sorular/">Tüm soruları görün →</a></p>` },
+
+<section class="bolum">
+  <p class="ustbaslik">Merak edilenler</p>
+  <h2>Sık sorulan sorular</h2>
+  ${sssHtml(sss.slice(0, 6))}
+  <p><a href="${P}sik-sorulan-sorular/">Tüm soruları görün →</a></p>
+</section>` },
 
 { path: 'homm-bitkisel-kayit/', title: `Homm Bitkisel Kayıt: Adım Adım Nasıl Üye Olunur? | ${AD}`,
   desc: `Homm Bitkisel yeni kayıt formu nasıl doldurulur? Ülke, tavsiye eden, iletişim ve kişisel bilgiler adım adım. Takıldığınız yerde ${AD} ücretsiz yardımcı olur.`,
   h1: 'Homm Bitkisel Kayıt: Adım Adım Nasıl Üye Olunur?',
+  lead: 'Homm Bitkisel yeni kayıt formu tek sayfadır ve birkaç dakikada doldurulur. Aşağıda her alanı sırasıyla anlattım.',
   body: `
-<p class="lead">Homm Bitkisel yeni kayıt formu tek sayfadır ve birkaç dakikada doldurulur. Aşağıda her alanı sırasıyla anlattım.</p>
 ${cta}
 <h2>Kayıt formundaki adımlar</h2>
-<ol class="adim">
-  <li><b>Kayıt türünü seçin.</b> Sayfanın başında iki kutu vardır: <i>Temsilci (Kazanç + Alışveriş)</i> ve <i>Ayrıcalıklı Müşteri (Sadece alışveriş yapacağım)</i>. Size uygun olanı işaretleyin.</li>
-  <li><b>Ülke ve tavsiye eden.</b> Ülkenizi seçin. “Tavsiye eden” alanında <b>${AD}</b> yazıyorsa doğru bağlantıdasınız; bu alan sizi destekleyecek sponsoru gösterir.</li>
-  <li><b>İletişim bilgileri.</b> Cep telefonu numaranızı iki kez ve e-posta adresinizi yazın. Onay mesajı bu numaraya gelir, bu yüzden kendi numaranızı kullanın.</li>
-  <li><b>Kişisel bilgiler.</b> Ad, soyad, şifre, kimlik numarası, doğum tarihi ve cinsiyet alanlarını doldurun. Şifrenizi not edin; temsilci girişinde kullanacaksınız.</li>
-  <li><b>Sözleşme onayı.</b> Formu gönderdikten sonra telefonunuza gelen sözleşmeyi onaylayın. Onaydan sonra size özel referans kodu tanımlanır.</li>
+<ol class="adimlar">
+  <li><span>1</span><div><h3>Kayıt türünü seçin</h3><p>Sayfanın başında iki kutu vardır: <i>Temsilci (Kazanç + Alışveriş)</i> ve <i>Ayrıcalıklı Müşteri (Sadece alışveriş yapacağım)</i>. Size uygun olanı işaretleyin.</p></div></li>
+  <li><span>2</span><div><h3>Ülke ve tavsiye eden</h3><p>Ülkenizi seçin. “Tavsiye eden” alanında <b>${AD}</b> yazıyorsa doğru bağlantıdasınız; bu alan sizi destekleyecek sponsoru gösterir.</p></div></li>
+  <li><span>3</span><div><h3>İletişim bilgileri</h3><p>Cep telefonu numaranızı iki kez ve e-posta adresinizi yazın. Onay mesajı bu numaraya gelir, bu yüzden kendi numaranızı kullanın.</p></div></li>
+  <li><span>4</span><div><h3>Kişisel bilgiler</h3><p>Ad, soyad, şifre, kimlik numarası, doğum tarihi ve cinsiyet alanlarını doldurun. Şifrenizi not edin; temsilci girişinde kullanacaksınız.</p></div></li>
+  <li><span>5</span><div><h3>Sözleşme onayı</h3><p>Formu gönderdikten sonra telefonunuza gelen sözleşmeyi onaylayın. Onaydan sonra size özel referans kodu tanımlanır.</p></div></li>
 </ol>
 <h2>Kayıtta en sık yapılan hatalar</h2>
 <ul>
@@ -111,63 +213,66 @@ ${cta}
 ${form('Formu birlikte dolduralım')}` },
 
 { path: 'homm-bitkisel-temsilci-ol/', title: `Homm Bitkisel Temsilci Ol: Şartlar ve Başvuru | ${AD}`,
-  desc: `Homm Bitkisel temsilcisi olmak için gereken şartlar, başvuru adımları ve temsilcilikte sizi nelerin beklediği. ${AD} ekibinden ücretsiz başlangıç desteği.`,
+  desc: `Homm Bitkisel temsilcisi olmak için gereken şartlar, başvuru adımları ve temsilcilikte sizi nelerin beklediği. ${EKIP}'ten ücretsiz başlangıç desteği.`,
   h1: 'Homm Bitkisel Temsilci Ol',
+  lead: 'Homm Bitkisel bağımsız temsilcisi olarak ürünleri kendi çevrenize ve internet üzerinden satabilir, dilerseniz kendi ekibinizi kurabilirsiniz.',
   body: `
-<p class="lead">Homm Bitkisel bağımsız temsilcisi olarak ürünleri kendi çevrenize ve internet üzerinden satabilir, dilerseniz kendi ekibinizi kurabilirsiniz.</p>
 ${cta}
+<figure class="gorsel"><img src="${P}img/ekip.jpg" alt="Evde birlikte çalışan üç kadın" loading="lazy" width="1100" height="733"></figure>
 <h2>Temsilci olmak için şartlar</h2>
-<ul>
-  <li>18 yaşını doldurmuş olmak.</li>
-  <li>Resmi kayıt formunu doldurmak ve telefonunuza gelen temsilci sözleşmesini onaylamak.</li>
-  <li>Giriş ücreti veya sermaye gerekmez.</li>
+<ul class="tik buyuk">
+  <li>${ik.onay}18 yaşını doldurmuş olmak.</li>
+  <li>${ik.onay}Resmi kayıt formunu doldurmak ve telefonunuza gelen temsilci sözleşmesini onaylamak.</li>
+  <li>${ik.onay}Giriş ücreti veya sermaye gerekmez.</li>
 </ul>
 <h2>Temsilci olunca ne yaparsınız?</h2>
-<ul>
-  <li><b>Alışveriş:</b> Ürünleri temsilci panelinizden kendiniz sipariş edersiniz.</li>
-  <li><b>Satış:</b> Ürünleri çevrenize ve şirket kurallarına uyarak internet üzerinden satabilirsiniz.</li>
-  <li><b>Ekip:</b> Kendi kayıt bağlantınızla yeni üyeler kaydedip ekip kurabilirsiniz.</li>
-</ul>
+<div class="grid3">
+  <div class="card ikon">${ik.sepet}<h3>Alışveriş</h3><p>Ürünleri temsilci panelinizden kendiniz sipariş edersiniz.</p></div>
+  <div class="card ikon">${ik.ev}<h3>Satış</h3><p>Ürünleri çevrenize ve şirket kurallarına uyarak internetten satabilirsiniz.</p></div>
+  <div class="card ikon">${ik.ekip}<h3>Ekip</h3><p>Kendi kayıt bağlantınızla yeni üyeler kaydedip ekip kurabilirsiniz.</p></div>
+</div>
 <h2>Dürüst olalım: kazanç garantisi yok</h2>
 <p>Bu iş bir maaş değildir. Kazancınız yaptığınız satışa, ayırdığınız zamana ve ekibinize bağlıdır. Kimseye sabit gelir sözü vermiyoruz; verenlere de itibar etmeyin. Bizim sözümüz şu: başlarken yalnız kalmazsınız.</p>
-<h2>${AD} ekibinde ne sunuyoruz?</h2>
-<ul>
-  <li>Kayıt formunda birebir yardım.</li>
-  <li>Panel, sipariş ve ürün bilgisi eğitimi.</li>
-  <li>Soru sorabileceğiniz bir ekip ve düzenli görüşmeler.</li>
+<h2>${EKIP}'te ne sunuyoruz?</h2>
+<ul class="tik buyuk">
+  <li>${ik.onay}Kayıt formunda birebir yardım.</li>
+  <li>${ik.onay}Panel, sipariş ve ürün bilgisi eğitimi.</li>
+  <li>${ik.onay}Soru sorabileceğiniz bir ekip ve düzenli görüşmeler.</li>
 </ul>
+${bioKart}
 ${form('Temsilcilik hakkında sizi arayalım')}` },
 
 { path: 'ayricalikli-musteri/', title: `Homm Bitkisel Ayrıcalıklı Müşteri Üyeliği Nedir? | ${AD}`,
   desc: `Satış yapmadan yalnızca alışveriş yapmak isteyenler için Homm Bitkisel Ayrıcalıklı Müşteri üyeliği: nedir, nasıl kayıt olunur, temsilcilikten farkı ne?`,
   h1: 'Homm Bitkisel Ayrıcalıklı Müşteri Üyeliği',
+  lead: 'Satış yapmak ya da ekip kurmak istemiyor, yalnızca ürünleri kendiniz için almak mı istiyorsunuz? Kayıt formundaki Ayrıcalıklı Müşteri seçeneği bunun için var.',
   body: `
-<p class="lead">Satış yapmak ya da ekip kurmak istemiyor, yalnızca ürünleri kendiniz için almak mı istiyorsunuz? Kayıt formundaki <b>Ayrıcalıklı Müşteri</b> seçeneği bunun için var.</p>
 ${cta}
 <h2>Ayrıcalıklı Müşteri kimdir?</h2>
 <p>Ayrıcalıklı Müşteri, Homm Bitkisel'e yalnızca alışveriş amacıyla üye olan kişidir. Satış yapma zorunluluğu yoktur. Siparişlerinizi resmi site üzerinden kendi hesabınızla verirsiniz.</p>
 <h2>Nasıl kayıt olunur?</h2>
-<ol class="adim">
-  <li>Kayıt bağlantısını açın.</li>
-  <li>Sayfanın başında <i>Ayrıcalıklı Müşteri (Sadece alışveriş yapacağım)</i> kutusunu seçin.</li>
-  <li>İletişim ve kişisel bilgilerinizi girip formu gönderin.</li>
+<ol class="adimlar">
+  <li><span>1</span><div><h3>Kayıt bağlantısını açın</h3><p>Bu sayfadaki “Hemen Ücretsiz Kayıt Ol” butonunu kullanın.</p></div></li>
+  <li><span>2</span><div><h3>Ayrıcalıklı Müşteri'yi seçin</h3><p>Sayfanın başındaki <i>Ayrıcalıklı Müşteri (Sadece alışveriş yapacağım)</i> kutusunu işaretleyin.</p></div></li>
+  <li><span>3</span><div><h3>Formu gönderin</h3><p>İletişim ve kişisel bilgilerinizi girip formu gönderin.</p></div></li>
 </ol>
 <h2>Temsilci mi, Ayrıcalıklı Müşteri mi?</h2>
-<table>
+<div class="tablo"><table>
   <tr><th></th><th>Temsilci</th><th>Ayrıcalıklı Müşteri</th></tr>
   <tr><td>Alışveriş</td><td>Evet</td><td>Evet</td></tr>
   <tr><td>Satış ve kazanç</td><td>Evet</td><td>Hayır</td></tr>
   <tr><td>Ekip kurma</td><td>Evet</td><td>Hayır</td></tr>
   <tr><td>Satış zorunluluğu</td><td>Yok</td><td>Yok</td></tr>
-</table>
+</table></div>
 <p>Hangisinin size uygun olduğundan emin değilseniz numaranızı bırakın, birlikte karar verelim.</p>
 ${form()}` },
 
 { path: 'homm-bitkisel-urunleri/', title: `Homm Bitkisel Ürünleri: Kategoriler ve Sipariş | ${AD}`,
   desc: `Homm Bitkisel ürün kategorileri: cilt bakımı, saç bakımı, kişisel bakım, ev temizliği ve daha fazlası. Üye olarak nasıl sipariş verilir?`,
   h1: 'Homm Bitkisel Ürünleri',
+  lead: 'Homm Bitkisel\'in ürün yelpazesi kişisel bakımdan ev temizliğine uzanır. Güncel ürünler, içerikler ve fiyatlar için tek doğru kaynak şirketin resmi kataloğudur.',
   body: `
-<p class="lead">Homm Bitkisel'in ürün yelpazesi kişisel bakımdan ev temizliğine uzanır. Güncel ürünler, içerikler ve fiyatlar için tek doğru kaynak şirketin resmi kataloğudur.</p>
+<figure class="gorsel"><img src="${P}img/urunler.jpg" alt="Bitkisel bakım ürünleri ve şifalı bitkiler" width="1100" height="733"></figure>
 <h2>Başlıca kategoriler</h2>
 <div class="grid3">
   <div class="card"><h3>Cilt bakımı</h3><p>Yüz ve vücut bakım ürünleri.</p></div>
@@ -180,25 +285,53 @@ ${form()}` },
 <p><a class="btn ghost" href="https://www.hommbitkisel.com.tr/urunler/tumu" rel="nofollow noopener" target="_blank">Resmi sitede tüm ürünleri görün</a></p>
 <h2>Nasıl sipariş verilir?</h2>
 <p>Ürünleri almak için önce üye olursunuz. Üyeliğiniz açıldıktan sonra resmi sitedeki hesabınıza girip sepete ekleyerek sipariş verirsiniz. Hangi ürünün size uygun olduğunu sormak isterseniz bize yazın.</p>
-<p class="not">Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
+<p class="not">Görseller temsilidir. Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
 ${cta}
 ${form('Ürünler hakkında bilgi alın')}` },
+
+{ path: 'eylem-arslan/', title: `${AD} Kimdir? ${EKIP} Kurucu Lideri, Homm Bitkisel ${KARIYER} Lider`,
+  desc: `${AD}: Homm Bitkisel'de ${KARIYER} kariyerinde bağımsız temsilci ve ${EKIP}'in kurucu lideri. Ekibe nasıl katılırsınız, size nasıl destek olur?`,
+  h1: `${AD}`,
+  lead: `${EKIP} Kurucu Lideri · Homm Bitkisel ${KARIYER} Lider`,
+  body: `
+<section class="bio buyuk">
+  ${avatar('b')}
+  <div>
+    <span class="rozet zumrut">◆ ${KARIYER} Lider</span>
+    <p>${AD}, Homm Bitkisel'de <b>${KARIYER}</b> kariyerine ulaşmış bir bağımsız temsilci ve <b>${EKIP}</b>'in kurucu lideridir.</p>
+    <p>${EKIP}'i, Homm Bitkisel'e yeni katılanların ilk günlerinde yalnız kalmaması için kurdu. Ekibe katılan herkesle kayıt formundan ilk siparişe, panel kullanımından kendi ekibini kurmaya kadar birebir ilgilenir.</p>
+  </div>
+</section>
+<h2>${EKIP}'te çalışma şeklimiz</h2>
+<div class="grid3">
+  <div class="card ikon">${ik.tel}<h3>Önce tanışırız</h3><p>Sizi arar, ne istediğinizi dinler, size uygun üyelik türünü birlikte seçeriz.</p></div>
+  <div class="card ikon">${ik.egitim}<h3>Sonra öğretiriz</h3><p>Paneli, sipariş vermeyi ve ürünleri adım adım anlatırız.</p></div>
+  <div class="card ikon">${ik.ekip}<h3>Birlikte büyürüz</h3><p>Ekip kurmak isteyenlere kendi tecrübemizi aktarırız.</p></div>
+</div>
+<h2>Sözümüz</h2>
+<p>Kimseye garanti kazanç vaat etmiyoruz. Vaat ettiğimiz şey emek: sorularınız yanıtsız kalmaz, başlarken yalnız kalmazsınız.</p>
+<div class="cta">
+  <a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">${EKIP}'e Katıl</a>
+  <a class="btn ghost" href="${WA_GENEL}" rel="nofollow noopener" target="_blank">WhatsApp'tan Yaz</a>
+</div>
+${form(`${AD} sizi arasın`)}` },
 
 { path: 'sik-sorulan-sorular/', title: `Homm Bitkisel Üyelik Hakkında Sık Sorulan Sorular | ${AD}`,
   desc: `Homm Bitkisel üyelik ücretli mi, kimler üye olabilir, satış zorunlu mu, üyelikten nasıl çıkılır? En çok sorulan soruların kısa ve net yanıtları.`,
   h1: 'Homm Bitkisel Üyelik: Sık Sorulan Sorular',
+  lead: 'En çok sorulan soruların kısa ve net yanıtları.',
   faq: true,
   body: `${sssHtml(sss)}${cta}${form('Sorunuz mu var? Arayalım')}` },
 
-{ path: 'iletisim/', title: `İletişim | Homm Bitkisel Bağımsız Temsilcisi ${AD}`,
+{ path: 'iletisim/', title: `İletişim | ${EKIP} · Homm Bitkisel Bağımsız Temsilcisi ${AD}`,
   desc: `Homm Bitkisel bağımsız temsilcisi ${AD} ile iletişim: telefon ${TEL}, WhatsApp ve geri arama formu.`,
   h1: 'İletişim',
+  lead: 'Üyelik, kayıt ve ürünler hakkında bana doğrudan ulaşabilirsiniz.',
   body: `
-<p class="lead">Üyelik, kayıt ve ürünler hakkında bana doğrudan ulaşabilirsiniz.</p>
 <div class="grid3">
-  <div class="card"><h3>Telefon</h3><p><a href="tel:+${TEL_INT}">${TEL}</a></p></div>
-  <div class="card"><h3>WhatsApp</h3><p><a href="${WA('Merhaba, Homm Bitkisel üyeliği hakkında bilgi almak istiyorum.')}" rel="nofollow noopener" target="_blank">Mesaj gönder</a></p></div>
-  <div class="card"><h3>Kayıt</h3><p><a href="${KAYIT}" rel="nofollow noopener" target="_blank">Resmi kayıt formu</a></p></div>
+  <a class="card ikon link" href="tel:+${TEL_INT}">${ik.tel}<h3>Telefon</h3><p>${TEL}</p></a>
+  <a class="card ikon link" href="${WA_GENEL}" rel="nofollow noopener" target="_blank">${ik.wa}<h3>WhatsApp</h3><p>Mesaj gönderin</p></a>
+  <a class="card ikon link" href="${KAYIT}" rel="nofollow noopener" target="_blank">${ik.hediye}<h3>Kayıt</h3><p>Resmi kayıt formu</p></a>
 </div>
 ${form()}
 <h2>Şirketin resmi iletişim bilgileri</h2>
@@ -214,7 +347,7 @@ ${form()}
 <h2>Hangi amaçla işlenir?</h2>
 <p>Yalnızca Homm Bitkisel üyeliği, kayıt adımları ve ürünler hakkında sizi bilgilendirmek üzere telefonla veya WhatsApp üzerinden aranmanız amacıyla.</p>
 <h2>Kimlerle paylaşılır?</h2>
-<p>Numaranız, sizi arayabilmesi için ${AD} ekibindeki bir bağımsız temsilciyle paylaşılabilir. Bunun dışında üçüncü kişilere satılmaz, devredilmez.</p>
+<p>Numaranız, sizi arayabilmesi için ${EKIP}'teki bir bağımsız temsilciyle paylaşılabilir. Bunun dışında üçüncü kişilere satılmaz, devredilmez.</p>
 <h2>Hukuki sebep ve saklama süresi</h2>
 <p>Verileriniz açık rızanıza dayanarak işlenir. Üye olmaktan vazgeçtiğinizde veya talep ettiğinizde derhal, her durumda en geç 6 ay içinde silinir.</p>
 <h2>Haklarınız</h2>
@@ -226,10 +359,12 @@ const layout = (p) => {
   const url = BASE + p.path;
   const robots = (INDEX && !p.noindex) ? 'index,follow' : 'noindex,nofollow';
   const ld = [];
-  if (p.path === '') ld.push({ '@context': 'https://schema.org', '@type': 'WebSite', name: `${AD} – Homm Bitkisel Bağımsız Temsilcisi`, url: BASE, inLanguage: 'tr' },
-    { '@context': 'https://schema.org', '@type': 'Person', name: AD, jobTitle: 'Homm Bitkisel Bağımsız Temsilcisi', telephone: '+' + TEL_INT, url: BASE });
+  const kisi = { '@context': 'https://schema.org', '@type': 'Person', name: AD, jobTitle: `${EKIP} Kurucu Lideri, Homm Bitkisel ${KARIYER} Lider`, telephone: '+' + TEL_INT, url: BASE + 'eylem-arslan/' };
+  if (p.path === '') ld.push({ '@context': 'https://schema.org', '@type': 'WebSite', name: `${EKIP} – ${AD} · Homm Bitkisel Bağımsız Temsilcisi`, url: BASE, inLanguage: 'tr' }, kisi);
+  if (p.path === 'eylem-arslan/') ld.push(kisi);
   if (p.faq) ld.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: sss.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
   if (p.path && !p.noindex) ld.push({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Üyelik', item: BASE }, { '@type': 'ListItem', position: 2, name: p.h1, item: url }] });
+  const ust = p.hero || `<section class="sayfabas"><div class="ic dar"><h1>${p.h1}</h1>${p.lead ? `<p class="lead">${p.lead}</p>` : ''}</div></section>`;
   return `<!doctype html>
 <html lang="tr"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -239,28 +374,38 @@ const layout = (p) => {
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="website"><meta property="og:locale" content="tr_TR">
 <meta property="og:title" content="${p.title}"><meta property="og:description" content="${p.desc}"><meta property="og:url" content="${url}">
-<meta name="theme-color" content="#1f5c3f">
+<meta property="og:image" content="${BASE}img/og.jpg"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#17503a">
 <link rel="icon" href="${P}favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${P}style.css">
 ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join('\n')}
 </head><body>
 <div class="ust">Bu site Homm Bitkisel'in resmi sitesi değildir; <b>bağımsız temsilci ${AD}</b> tarafından hazırlanmıştır.</div>
 <header><div class="ic">
-  <a class="marka" href="${P}"><span class="yaprak">❦</span> ${AD}<small>Homm Bitkisel Bağımsız Temsilcisi</small></a>
+  <a class="marka" href="${P}"><span class="logo">EA</span><span>${EKIP}<small>${AD} · Homm Bitkisel Bağımsız Temsilcisi</small></span></a>
   <nav>${nav.map(([h, t]) => `<a href="${P}${h}"${h === p.path ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+  <a class="btn primary kucuk" href="${KAYIT}" rel="nofollow noopener" target="_blank">Ücretsiz Kayıt</a>
 </div></header>
-<main><div class="ic">
-<h1>${p.h1}</h1>
+<main>
+${ust}
+<div class="ic${p.hero ? '' : ' dar'} govde">
 ${p.body}
-</div></main>
+</div>
+</main>
 <footer><div class="ic">
-  <p><b>${AD}</b> · Homm Bitkisel Bağımsız Temsilcisi · <a href="tel:+${TEL_INT}">${TEL}</a></p>
-  <p>Bu site bağımsız bir temsilci sayfasıdır. Homm Bitkisel ve Homm Life adları Homm Bitkisel Ürünler Pazarlama A.Ş.'ye aittir. Resmi site: hommbitkisel.com.tr · Müşteri hizmetleri: 444 77 97</p>
-  <p><a href="${P}kvkk/">KVKK Aydınlatma Metni</a> · <a href="${P}iletisim/">İletişim</a></p>
+  <div class="fgrid">
+    <div><p class="fmarka">${EKIP}</p><p>${AD}<br>${KARIYER} Lider · Homm Bitkisel Bağımsız Temsilcisi</p><p><a href="tel:+${TEL_INT}">${TEL}</a></p></div>
+    <div><p class="fbas">Sayfalar</p>${nav.map(([h, t]) => `<a href="${P}${h}">${t}</a>`).join('')}</div>
+    <div><p class="fbas">Bilgi</p><a href="${P}kvkk/">KVKK Aydınlatma Metni</a><a href="${KAYIT}" rel="nofollow noopener" target="_blank">Resmi kayıt formu</a><a href="${WA_GENEL}" rel="nofollow noopener" target="_blank">WhatsApp</a></div>
+  </div>
+  <p class="yasal">Bu site bağımsız bir temsilci sayfasıdır. Homm Bitkisel ve Homm Life adları Homm Bitkisel Ürünler Pazarlama A.Ş.'ye aittir. Resmi site: hommbitkisel.com.tr · Müşteri hizmetleri: 444 77 97. Kazanç kişinin çalışmasına bağlıdır; garanti edilen gelir yoktur.</p>
 </div></footer>
+<a class="wayuzen" href="${WA_GENEL}" rel="nofollow noopener" target="_blank" aria-label="WhatsApp'tan yazın">${ik.wa}</a>
 <div class="alt">
   <a class="k" href="${KAYIT}" rel="nofollow noopener" target="_blank">Kayıt Ol</a>
-  <a class="w" href="${WA('Merhaba, Homm Bitkisel üyeliği hakkında bilgi almak istiyorum.')}" rel="nofollow noopener" target="_blank">WhatsApp</a>
+  <a class="w" href="${WA_GENEL}" rel="nofollow noopener" target="_blank">WhatsApp</a>
   <a class="a" href="tel:+${TEL_INT}">Ara</a>
 </div>
 <script>
@@ -274,66 +419,143 @@ function gonder(f){
 };
 
 const css = `
-:root{--y:#1f5c3f;--y2:#2f7d57;--k:#f6f3ea;--m:#1d2a22;--g:#5b6b61;--c:#fff;--s:#e3ddcd;--wa:#128c4b}
+:root{--y:#17503a;--y2:#2a7a57;--z:#0f8a5f;--acik:#e6f0e7;--k:#faf7f0;--m:#1b2a22;--g:#5a6a60;--c:#fff;--s:#e6e0d0;--altin:#b98a2f;--wa:#128c4b;--r:18px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;font:17px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--m);background:var(--k);padding-bottom:64px}
-.ic{max-width:860px;margin:0 auto;padding:0 16px}
-.ust{background:#fff7d6;color:#5c4a00;font-size:13.5px;text-align:center;padding:7px 12px;border-bottom:1px solid #ecdf9d}
-header{background:var(--c);border-bottom:1px solid var(--s)}
-header .ic{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;padding-top:12px;padding-bottom:10px}
-.marka{font-weight:800;font-size:20px;color:var(--y);text-decoration:none;line-height:1.2}
-.marka small{display:block;font-weight:500;font-size:12.5px;color:var(--g)}
-.yaprak{color:var(--y2)}
-nav{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14.5px}
-nav a{color:var(--m);text-decoration:none;padding:3px 0;border-bottom:2px solid transparent}
-nav a:hover,nav a[aria-current]{border-color:var(--y2);color:var(--y)}
-main{padding:26px 0 40px}
-h1{font-size:clamp(27px,5.4vw,40px);line-height:1.15;margin:0 0 14px;color:var(--y);text-wrap:balance}
-h2{font-size:23px;margin:34px 0 10px;color:var(--y)}
-h3{margin:0 0 4px;font-size:17.5px;color:var(--y)}
-.lead{font-size:19px}
+body{margin:0;font:17px/1.65 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--m);background:var(--k);padding-bottom:62px;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+svg.dolu{fill:currentColor;stroke:none}
+.ic{max-width:1120px;margin:0 auto;padding:0 20px}.ic.dar{max-width:820px}
 a{color:var(--y2)}
-.cta{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 8px}
-.btn{display:inline-block;padding:13px 22px;border-radius:10px;font-weight:700;text-decoration:none;border:2px solid var(--y);cursor:pointer;font-size:16.5px;font-family:inherit}
-.btn.primary{background:var(--y);color:#fff}.btn.primary:hover{background:var(--y2);border-color:var(--y2)}
-.btn.ghost{background:transparent;color:var(--y)}
-.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff;width:100%}
+h1,h2,.fmarka{font-family:"Playfair Display",Georgia,serif;font-weight:700;letter-spacing:-.01em}
+h1{font-size:clamp(32px,5.6vw,54px);line-height:1.1;margin:14px 0 16px;color:var(--y);text-wrap:balance}
+h1 em{font-style:italic;color:var(--z)}
+h2{font-size:clamp(25px,3.4vw,34px);line-height:1.2;margin:0 0 14px;color:var(--y);text-wrap:balance}
+h3{margin:0 0 4px;font-size:18px;color:var(--y)}
+.lead{font-size:19.5px;color:#33443a;max-width:60ch}
+.ustbaslik{margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--altin)}
 .not{font-size:14px;color:var(--g)}
-.card{background:var(--c);border:1px solid var(--s);border-radius:14px;padding:16px 18px}
-.card p{margin:0}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:22px 0}
-.adim{padding-left:22px}.adim li{margin:8px 0}
-.form{margin:34px 0;border-color:var(--y2);box-shadow:0 6px 24px rgba(31,92,63,.08)}
-.form h2{margin-top:0}
-form{display:grid;gap:12px;margin-top:12px}
-label{display:grid;gap:5px;font-weight:600;font-size:15px}
-input,select{font:inherit;padding:12px;border:1px solid #c9c2ae;border-radius:9px;background:#fff;width:100%}
-input:focus,select:focus{outline:2px solid var(--y2);outline-offset:1px}
-.onay{grid-template-columns:22px 1fr;align-items:start;font-weight:400;font-size:13.5px;color:var(--g)}
+.rozet{display:inline-block;background:var(--acik);color:var(--y);font-size:13px;font-weight:700;padding:5px 12px;border-radius:99px}
+.rozet.zumrut{background:linear-gradient(135deg,#0f8a5f,#17503a);color:#fff;letter-spacing:.03em}
+
+.ust{background:#fff7d6;color:#5c4a00;font-size:13px;text-align:center;padding:6px 12px}
+header{background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--s);position:sticky;top:0;z-index:20}
+header .ic{display:flex;align-items:center;gap:10px 22px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.marka{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--y);text-decoration:none;line-height:1.15}
+.marka small{display:block;font-weight:500;font-size:11.5px;color:var(--g)}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--z),var(--y));color:#fff;display:grid;place-items:center;font-family:"Playfair Display",serif;font-size:17px}
+nav{display:flex;gap:4px 16px;font-size:14.5px;flex:1;flex-wrap:wrap}
+nav a{color:var(--m);text-decoration:none;padding:4px 0;border-bottom:2px solid transparent;white-space:nowrap}
+nav a:hover,nav a[aria-current]{border-color:var(--z);color:var(--y)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:99px;font-weight:700;text-decoration:none;border:2px solid var(--y);cursor:pointer;font-size:16.5px;font-family:inherit;transition:transform .15s,box-shadow .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--y);color:#fff;box-shadow:0 8px 20px rgba(23,80,58,.25)}.btn.primary:hover{background:var(--y2);border-color:var(--y2)}
+.btn.ghost{background:transparent;color:var(--y)}.btn.ghost:hover{background:var(--acik)}
+.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff;width:100%}
+.btn.kucuk{padding:9px 18px;font-size:14.5px;box-shadow:none}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0 10px}
+
+.hero{background:radial-gradient(1200px 500px at 85% 0%,#dcebdd 0%,transparent 60%),linear-gradient(180deg,#f1f6ee,var(--k))}
+.heroic{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding-top:48px;padding-bottom:56px}
+.herogorsel{position:relative}
+.herogorsel img{border-radius:28px 28px 28px 120px;box-shadow:0 30px 60px rgba(23,80,58,.22);aspect-ratio:4/5;object-fit:cover;width:100%}
+.yuzen{position:absolute;left:-18px;bottom:28px;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 14px 34px rgba(0,0,0,.14);font-size:13.5px;line-height:1.35}
+.yuzen b{display:block;color:var(--y);font-size:15px}.yuzen span{color:var(--g)}
+.cip{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px;font-weight:500;color:var(--y)}
+.cip li{display:flex;align-items:center;gap:6px}.cip svg{width:18px;height:18px;color:var(--z);stroke-width:2.6}
+
+.sayfabas{background:linear-gradient(180deg,#eaf2e8,var(--k));padding:38px 0 8px}
+.govde{padding-top:8px;padding-bottom:56px}
+.govde>h2{margin-top:44px}
+.bolum{margin:64px 0}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:22px 0}
+.card{background:var(--c);border:1px solid var(--s);border-radius:var(--r);padding:20px 22px;box-shadow:0 2px 10px rgba(27,42,34,.04)}
+.card p{margin:0;color:#3d4c43}
+.card.ikon>svg{width:44px;height:44px;padding:10px;border-radius:12px;background:var(--acik);color:var(--y);margin-bottom:12px}
+.card.link{text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}.card.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(23,80,58,.12)}
+
+.bio{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;background:linear-gradient(135deg,#fff,#f0f6ef);border:1px solid var(--s);border-radius:26px;padding:30px;margin:56px 0;box-shadow:0 12px 34px rgba(23,80,58,.08)}
+.bio h2{margin:10px 0 2px}.bio .unvan{margin:0 0 10px;font-weight:700;color:var(--altin);font-size:15px}
+.bio p{margin:0 0 10px}
+.avatar{width:150px;height:150px;border-radius:50%;object-fit:cover;border:5px solid #fff;box-shadow:0 10px 26px rgba(23,80,58,.22)}
+.avatar.b{width:190px;height:190px}
+.avatar.mono{display:grid;place-items:center;background:linear-gradient(135deg,var(--z),var(--y));color:#fff;font-family:"Playfair Display",serif;font-size:52px}
+
+.adimlar{list-style:none;padding:0;margin:22px 0;display:grid;gap:14px}
+.adimlar li{display:flex;gap:16px;align-items:flex-start;background:var(--c);border:1px solid var(--s);border-radius:var(--r);padding:18px 20px}
+.adimlar li>span{flex:none;width:42px;height:42px;border-radius:50%;background:var(--y);color:#fff;display:grid;place-items:center;font-family:"Playfair Display",serif;font-size:19px}
+.adimlar p{margin:0;color:#3d4c43}
+
+.ikili{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:22px}
+.secenek h3{font-size:24px;font-family:"Playfair Display",serif;margin:12px 0 6px}
+.secenek a{font-weight:700}
+.tik{list-style:none;padding:0;margin:14px 0;display:grid;gap:8px}
+.tik li{display:flex;gap:9px;align-items:flex-start}.tik svg{width:20px;height:20px;color:var(--z);stroke-width:2.6;margin-top:3px}
+.tik.buyuk li{background:var(--c);border:1px solid var(--s);border-radius:14px;padding:12px 16px}
+
+.bant{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;margin:64px 0}
+.bant img,.gorsel img{border-radius:24px;box-shadow:0 18px 40px rgba(23,80,58,.14);width:100%;object-fit:cover}
+.gorsel{margin:26px 0}.gorsel img{aspect-ratio:16/8}
+
+.formkart{display:grid;grid-template-columns:1fr 1.1fr;gap:34px;background:var(--y);color:#eaf3ec;border-radius:28px;padding:36px;margin:64px 0;scroll-margin-top:90px}
+.formkart h2{color:#fff;margin-top:12px}.formkart .rozet{background:rgba(255,255,255,.14);color:#fff}
+.formkart .tik svg{color:#8fe0b8}
+.formkart form{background:#fff;color:var(--m);border-radius:20px;padding:22px;display:grid;gap:12px;align-content:start}
+label{display:grid;gap:5px;font-weight:700;font-size:14.5px}
+input,select{font:inherit;padding:12px 14px;border:1.5px solid #cfc8b4;border-radius:12px;background:#fff;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--z);box-shadow:0 0 0 3px rgba(15,138,95,.18)}
+.onay{grid-template-columns:22px 1fr;align-items:start;font-weight:400;font-size:13px;color:var(--g)}
 .onay input{width:18px;height:18px;margin-top:3px;padding:0}
-form small{color:var(--g);font-size:13px}
-details{background:var(--c);border:1px solid var(--s);border-radius:12px;padding:12px 16px;margin:8px 0}
-summary{font-weight:700;cursor:pointer}
-details p{margin:8px 0 2px}
-table{width:100%;border-collapse:collapse;background:var(--c);border:1px solid var(--s);border-radius:12px;overflow:hidden;font-size:15.5px}
-th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--s)}th{background:#eef3ee;color:var(--y)}
-footer{background:var(--y);color:#dfeae3;font-size:14px;padding:22px 0}
-footer a{color:#fff}
-.alt{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:1.3fr 1fr .8fr;background:#fff;border-top:1px solid var(--s);z-index:9}
-.alt a{padding:15px 6px;text-align:center;font-weight:800;text-decoration:none;color:#fff;font-size:15.5px}
-.alt .k{background:var(--y)}.alt .w{background:var(--wa)}.alt .a{background:#33443a}
-@media(min-width:800px){.alt{display:none}body{padding-bottom:0}}
+form small{color:var(--g);font-size:12.5px}
+
+.sss{display:grid;gap:10px;margin:18px 0}
+details{background:var(--c);border:1px solid var(--s);border-radius:16px;padding:15px 20px}
+details[open]{border-color:var(--y2);box-shadow:0 6px 18px rgba(23,80,58,.08)}
+summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;line-height:1;color:var(--z)}details[open] summary::after{content:"–"}
+details p{margin:10px 0 2px;color:#3d4c43}
+
+.tablo{overflow-x:auto;border:1px solid var(--s);border-radius:var(--r);background:var(--c)}
+table{width:100%;border-collapse:collapse;font-size:15.5px}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--s)}th{background:var(--acik);color:var(--y)}
+tr:last-child td{border-bottom:0}
+
+footer{background:#12382a;color:#cfe0d5;font-size:14.5px;padding:44px 0 26px}
+footer a{color:#fff;text-decoration:none;display:block;padding:2px 0}footer a:hover{text-decoration:underline}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px}
+.fmarka{font-size:24px;color:#fff;margin:0 0 6px}.fbas{font-weight:700;color:#fff;margin:0 0 8px}
+.yasal{border-top:1px solid rgba(255,255,255,.14);margin-top:26px;padding-top:16px;font-size:12.5px;color:#a9c2b3}
+
+.wayuzen{position:fixed;right:22px;bottom:22px;width:58px;height:58px;border-radius:50%;background:var(--wa);color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px rgba(18,140,75,.45);z-index:15}
+.wayuzen svg{width:32px;height:32px}
+.alt{position:fixed;left:0;right:0;bottom:0;display:none;grid-template-columns:1.3fr 1fr .8fr;z-index:25;box-shadow:0 -4px 16px rgba(0,0,0,.12)}
+.alt a{padding:16px 6px;text-align:center;font-weight:700;text-decoration:none;color:#fff;font-size:15.5px}
+.alt .k{background:var(--y)}.alt .w{background:var(--wa)}.alt .a{background:#2c3d33}
+@media(min-width:861px){body{padding-bottom:0}}
+@media(max-width:860px){
+  .alt{display:grid}.wayuzen{display:none}
+  header .ic{gap:8px 14px}header .btn{display:none}
+  nav{flex-basis:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}nav::-webkit-scrollbar{display:none}
+  .heroic{grid-template-columns:1fr;gap:30px;padding-top:28px;padding-bottom:36px}
+  .herogorsel{max-width:440px}.herogorsel img{border-radius:24px 24px 24px 80px;aspect-ratio:5/5}.yuzen{left:10px;bottom:14px}
+  .bant,.formkart{grid-template-columns:1fr}.formkart{padding:24px 18px;border-radius:22px;margin:48px -6px}
+  .bio{grid-template-columns:1fr;text-align:center;justify-items:center;padding:24px 20px}
+  .fgrid{grid-template-columns:1fr}.bolum{margin:48px 0}
+}
 `;
 
 if (existsSync(OUT)) rmSync(OUT, { recursive: true });
 for (const p of pages) { mkdirSync(`${OUT}/${p.path}`, { recursive: true }); writeFileSync(`${OUT}/${p.path}index.html`, layout(p)); }
+cpSync('assets', `${OUT}/img`, { recursive: true });
 writeFileSync(`${OUT}/style.css`, css);
-writeFileSync(`${OUT}/favicon.svg`, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1f5c3f"/><text x="32" y="44" font-size="34" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-weight="700">EA</text></svg>`);
+writeFileSync(`${OUT}/favicon.svg`, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#17503a"/><text x="32" y="44" font-size="34" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-weight="700">EA</text></svg>`);
 writeFileSync(`${OUT}/.nojekyll`, '');
 writeFileSync(`${OUT}/robots.txt`, INDEX ? `User-agent: *\nAllow: /\nSitemap: ${BASE}sitemap.xml\n` : `User-agent: *\nDisallow: /\n`);
 const today = new Date().toISOString().slice(0, 10);
 writeFileSync(`${OUT}/sitemap.xml`, `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.filter(p => !p.noindex).map(p => `<url><loc>${BASE}${p.path}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 writeFileSync(`${OUT}/404.html`, layout({ path: '404', noindex: true, title: 'Sayfa bulunamadı', desc: '', h1: 'Sayfa bulunamadı', body: `<p><a href="${P}">Ana sayfaya dönün</a></p>` }));
-console.log(`${pages.length} sayfa üretildi. Google'a açık: ${INDEX}`);
 // Google Search Console sahiplik doğrulaması (silmeyin)
 writeFileSync(`${OUT}/google0ab4c5d791854410.html`, 'google-site-verification: google0ab4c5d791854410.html');
+console.log(`${pages.length} sayfa üretildi. Google'a açık: ${INDEX}. Fotoğraf: ${FOTO ? 'var' : 'yok (EA monogram)'}`);
