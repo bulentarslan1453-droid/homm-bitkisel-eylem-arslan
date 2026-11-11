@@ -19,10 +19,35 @@ const OUT = 'docs';
 const FOTO = existsSync('assets/eylem-arslan.jpg');
 
 const nav = [
-  ['', 'Üyelik'], ['homm-bitkisel-kayit/', 'Nasıl Kayıt Olunur'], ['homm-bitkisel-temsilci-ol/', 'Temsilci Ol'],
-  ['ayricalikli-musteri/', 'Ayrıcalıklı Müşteri'], ['homm-bitkisel-urunleri/', 'Ürünler'],
-  ['eylem-arslan/', 'Eylem Arslan'], ['sik-sorulan-sorular/', 'Sık Sorulanlar'], ['iletisim/', 'İletişim'],
+  ['', 'Ana Sayfa'], ['hakkimizda/', 'Hakkımızda'], ['hizli-basvuru/', 'Hızlı Başvuru'], ['homm-bitkisel-urunleri/', 'Ürünler'],
+  ['homm-bitkisel-kayit/', 'Nasıl Kayıt Olunur'], ['homm-bitkisel-temsilci-ol/', 'Temsilci Ol'], ['sertifikalar/', 'Sertifikalar'],
+  ['sik-sorulan-sorular/', 'Sık Sorulanlar'], ['iletisim/', 'İletişim'],
 ];
+const altnav = [['ayricalikli-musteri/', 'Ayrıcalıklı Müşteri'], ['eylem-arslan/', 'Eylem Arslan Kimdir?'], ['kvkk/', 'KVKK Aydınlatma Metni']];
+
+// Görseller ve adlar hommbitkisel.com.tr resmi ürün sayfasından alınmıştır.
+const URUN_URL = 'https://www.hommbitkisel.com.tr/urunler/tumu';
+const urunler = [
+  ['balli-krem', 'Ballı Krem', '50 ml', 'Cilt Bakımı'],
+  ['ozonlu-zeytinyagi', 'Ozonla Zenginleştirilmiş Zeytinyağı', '30 ml', 'Cilt Bakımı'],
+  ['papatyali-yuz-jeli', 'Papatyalı Yüz Yıkama Jeli', '250 ml', 'Cilt Bakımı'],
+  ['yogun-nemlendirici', 'Yoğun Nemlendirici Krem', '75 ml', 'Cilt Bakımı'],
+  ['bright-c-serum', 'Powerfull Bright C Serum', '30 ml', 'Cilt Bakımı'],
+  ['gunes-kremi', 'Güneş Kremi 50 SPF', '50 ml', 'Cilt Bakımı'],
+  ['argan-serum', 'Argan Yağlı Serum', '30 ml', 'Saç ve Kişisel Bakım'],
+  ['yaseminli-dus-jeli', 'Yaseminli Duş Jeli', '400 ml', 'Saç ve Kişisel Bakım'],
+  ['dis-macunu', 'Damla Sakızlı Diş Macunu', '75 ml', 'Saç ve Kişisel Bakım'],
+  ['bebek-sampuani', 'Bebek Saç ve Vücut Şampuanı', '400 ml', 'Saç ve Kişisel Bakım'],
+  ['bulasik-deterjani', 'Konsantre Bulaşık Deterjanı', '500 ml', 'Ev Temizliği'],
+  ['camasir-deterjani', 'Ekstra Konsantre Çamaşır Deterjanı', '1000 ml', 'Ev Temizliği'],
+  ['yag-cozucu', 'Yağ Çözücü', '500 ml', 'Ev Temizliği'],
+  ['yuzey-temizleyici', 'Yüzey Temizleyicisi', '1000 ml', 'Ev Temizliği'],
+  ['kolajenli-kahve', 'Kolajenli Hindiba Kahve', '100 gr', 'Kahve ve İçecek'],
+  ['corekotu-kahve', 'Çörekotu Kahve', '30 adet', 'Kahve ve İçecek'],
+];
+const urunKart = ([d, ad, boy, kat]) => `<a class="urun" href="${URUN_URL}" rel="nofollow noopener" target="_blank"><span class="ug"><img src="${P}img/urun/${d}.png" alt="Homm ${ad} ${boy}" loading="lazy"></span><small>${kat}</small><b>${ad}</b><i>${boy}</i></a>`;
+const urunGrid = (list) => `<div class="urunler">${list.map(urunKart).join('')}</div>`;
+const sertifikalar = ['Helal Kozmetik Sertifikası', 'Helal Gıda Sertifikası', 'Helal Deterjan Sertifikası', 'İyi Üretim Uygulamaları (GMP) Sertifikası', 'Gıda Güvenliği Yönetimi Sertifikası', 'Kalite Yönetimi Sertifikası', 'İşletme Kayıt Belgesi', 'Doğrudan Satış Yetkisi Belgesi'];
 
 const ik = {
   hediye: '<svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 110-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 100-5C13 2 12 7 12 7z"/></svg>',
@@ -50,6 +75,7 @@ const form = (baslik = 'Sizi arayalım') => `
   <form onsubmit="return gonder(this)">
     <label>Adınız Soyadınız<input name="ad" required minlength="3" autocomplete="name"></label>
     <label>Telefon Numaranız<input name="tel" required type="tel" inputmode="tel" pattern="[0-9 +()]{10,17}" placeholder="05xx xxx xx xx" autocomplete="tel"></label>
+    <label>Şehir<input name="sehir" required autocomplete="address-level1"></label>
     <label>İlgilendiğiniz konu
       <select name="konu"><option>Temsilci olmak istiyorum</option><option>Sadece indirimli alışveriş (Ayrıcalıklı Müşteri)</option><option>Bilgi almak istiyorum</option></select>
     </label>
@@ -122,6 +148,17 @@ const pages = [
   </div>
 </div></section>`,
   body: `
+<section class="tanitim">
+  <div>
+    <p class="ustbaslik">Homm Bitkisel nedir?</p>
+    <h2>Doğrudan satışla çalışan bitkisel ürünler markası</h2>
+    <p>Homm Bitkisel; kişisel bakım, kozmetik, ev temizliği ve gıda kategorilerinde ürünler sunan bir doğrudan satış şirketidir. Üyeler ürünleri kendi hesaplarından sipariş eder; dileyen çevresine önererek ve ekip kurarak ek gelir fırsatı oluşturur.</p>
+    <p>İster yalnızca alışveriş yapmak için katılın, ister satış ve ekip çalışmasıyla ilerleyin; ${EKIP} iki yolda da yanınızda.</p>
+    <a class="btn ghost" href="${P}hakkimizda/">Hakkımızda</a>
+  </div>
+  <img src="${P}img/ekip.jpg" alt="Evde birlikte çalışan ${EKIP} üyeleri (temsili)" loading="lazy" width="1100" height="733">
+</section>
+
 <section class="bolum">
   <p class="ustbaslik">Neden bu ekip?</p>
   <h2>Üyelikte sizi neler bekliyor?</h2>
@@ -169,14 +206,11 @@ ${bioKart}
   </div>
 </section>
 
-<section class="bant">
-  <img src="${P}img/urunler.jpg" alt="Bitkisel bakım ürünleri ve şifalı bitkiler" loading="lazy" width="1100" height="733">
-  <div>
-    <p class="ustbaslik">Ürünler</p>
-    <h2>Kişisel bakımdan ev temizliğine</h2>
-    <p>Homm Bitkisel; cilt ve saç bakımı, kişisel bakım, ev temizliği, anne-bebek ve içecek kategorilerinde bitkisel içerikli ürünler sunar.</p>
-    <a class="btn ghost" href="${P}homm-bitkisel-urunleri/">Ürün kategorilerini görün</a>
-  </div>
+<section class="bolum">
+  <p class="ustbaslik">Ürünler</p>
+  <h2>Öne çıkan Homm ürünleri</h2>
+  ${urunGrid([0, 1, 2, 6, 7, 10, 11, 14].map(i => urunler[i]))}
+  <p><a class="btn ghost" href="${P}homm-bitkisel-urunleri/">Tüm ürün kategorilerini görün</a></p>
 </section>
 
 ${form()}
@@ -272,22 +306,62 @@ ${form()}` },
   h1: 'Homm Bitkisel Ürünleri',
   lead: 'Homm Bitkisel\'in ürün yelpazesi kişisel bakımdan ev temizliğine uzanır. Güncel ürünler, içerikler ve fiyatlar için tek doğru kaynak şirketin resmi kataloğudur.',
   body: `
-<figure class="gorsel"><img src="${P}img/urunler.jpg" alt="Bitkisel bakım ürünleri ve şifalı bitkiler" width="1100" height="733"></figure>
-<h2>Başlıca kategoriler</h2>
-<div class="grid3">
-  <div class="card"><h3>Cilt bakımı</h3><p>Yüz ve vücut bakım ürünleri.</p></div>
-  <div class="card"><h3>Saç bakımı</h3><p>Şampuan ve saç bakım ürünleri.</p></div>
-  <div class="card"><h3>Kişisel bakım</h3><p>Günlük bakım ve hijyen ürünleri.</p></div>
-  <div class="card"><h3>Ev temizliği</h3><p>Konsantre temizlik ürünleri.</p></div>
-  <div class="card"><h3>Anne ve bebek</h3><p>Bebekler için bakım ürünleri.</p></div>
-  <div class="card"><h3>Gıda ve içecek</h3><p>Kahve ve içecek çeşitleri.</p></div>
-</div>
-<p><a class="btn ghost" href="https://www.hommbitkisel.com.tr/urunler/tumu" rel="nofollow noopener" target="_blank">Resmi sitede tüm ürünleri görün</a></p>
+${['Cilt Bakımı', 'Saç ve Kişisel Bakım', 'Ev Temizliği', 'Kahve ve İçecek'].map(k => `<h2>${k}</h2>${urunGrid(urunler.filter(u => u[3] === k))}`).join('')}
+<p>Burada yalnızca bir seçki var; katalogda 350'den fazla ürün bulunuyor.</p>
+<p><a class="btn ghost" href="${URUN_URL}" rel="nofollow noopener" target="_blank">Resmi sitede tüm ürünleri ve fiyatları görün</a></p>
 <h2>Nasıl sipariş verilir?</h2>
 <p>Ürünleri almak için önce üye olursunuz. Üyeliğiniz açıldıktan sonra resmi sitedeki hesabınıza girip sepete ekleyerek sipariş verirsiniz. Hangi ürünün size uygun olduğunu sormak isterseniz bize yazın.</p>
-<p class="not">Görseller temsilidir. Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
+<p class="not">Ürün görselleri ve adları Homm Bitkisel'in resmi sitesinden alınmıştır; güncel fiyat ve içerik için resmi siteye bakın. Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
 ${cta}
 ${form('Ürünler hakkında bilgi alın')}` },
+
+{ path: 'hakkimizda/', title: `Hakkımızda | ${EKIP} · Homm Bitkisel Bağımsız Temsilcisi ${AD}`,
+  desc: `${EKIP}; Homm Bitkisel'e katılmak isteyenlere doğru bilgi, birebir destek ve ekip çalışması sunar. Kurucu lider: ${KARIYER} kariyerinden ${AD}.`,
+  h1: 'Hakkımızda',
+  lead: `${EKIP}; Homm Bitkisel'e katılmak isteyenlere doğru bilgi, birebir destek ve sürdürülebilir ekip çalışması sunmak için kuruldu.`,
+  body: `
+<figure class="gorsel"><img src="${P}img/ekip.jpg" alt="Birlikte çalışan ekip üyeleri (temsili)" width="1100" height="733"></figure>
+<h2>Amacımız</h2>
+<p>Hedefimiz yalnızca kayıt oluşturmak değil; bilinçli, aktif ve uzun vadeli ilerleyen bir ekip kurmak. Yeni başlayan üyelerin sistemi kolay öğrenebilmesi için süreç boyunca iletişimde kalıyor, eğitimlere yönlendiriyor ve her aşamada yanlarında oluyoruz.</p>
+<div class="grid3">
+  <div class="card ikon">${ik.tel}<h3>Doğru bilgi</h3><p>Sistemi abartmadan, olduğu gibi anlatırız.</p></div>
+  <div class="card ikon">${ik.egitim}<h3>Eğitim</h3><p>Panel, sipariş ve ürün eğitimlerine yönlendiririz.</p></div>
+  <div class="card ikon">${ik.ekip}<h3>Birlikte büyüme</h3><p>Ekip kurmak isteyenlere tecrübemizi aktarırız.</p></div>
+</div>
+${bioKart}
+<h2>Homm Bitkisel hakkında</h2>
+<p>Homm Bitkisel Ürünler Pazarlama A.Ş.; merkezi İstanbul Maltepe'de bulunan, ürünlerini bağımsız temsilciler aracılığıyla satan bir doğrudan satış şirketidir. Şirketin belgeleri için <a href="${P}sertifikalar/">Sertifikalar</a> sayfasına bakabilirsiniz.</p>
+<div class="cta">
+  <a class="btn primary" href="${P}hizli-basvuru/">Hızlı Başvuru Formu</a>
+  <a class="btn ghost" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Kayıt Ol</a>
+</div>` },
+
+{ path: 'hizli-basvuru/', title: `Homm Bitkisel Hızlı Başvuru Formu | ${EKIP} · ${AD}`,
+  desc: `Homm Bitkisel hızlı başvuru: adınızı, şehrinizi ve telefonunuzu bırakın, ${EKIP} sizi arayıp ücretsiz üyeliğinizi birlikte tamamlasın.`,
+  h1: 'Hızlı Başvuru Formu',
+  lead: 'Başvurunuzu bir dakikada bırakın, sizi arayıp üyeliğinizi birlikte tamamlayalım.',
+  body: `
+${form('Başvurunuzu bırakın')}
+<h2>Başvurudan sonra ne olur?</h2>
+<ol class="adimlar">
+  <li><span>1</span><div><h3>Sizi ararız</h3><p>${AD} veya ${EKIP}'ten bir bağımsız temsilci sizi arar.</p></div></li>
+  <li><span>2</span><div><h3>Üyelik türünü seçeriz</h3><p>Temsilci mi, Ayrıcalıklı Müşteri mi; size uygun olanı birlikte belirleriz.</p></div></li>
+  <li><span>3</span><div><h3>Kaydı tamamlarız</h3><p>Resmi kayıt formunu telefonda birlikte doldururuz; üyeliğiniz ücretsiz açılır.</p></div></li>
+</ol>
+<p>Beklemeden kendiniz kayıt olmak isterseniz:</p>
+<div class="cta"><a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Kayıt Ol</a></div>` },
+
+{ path: 'sertifikalar/', title: `Homm Bitkisel Sertifikaları ve Belgeleri | ${AD}`,
+  desc: 'Homm Bitkisel\'in helal sertifikaları, GMP, kalite ve gıda güvenliği belgeleri ile Doğrudan Satış Yetkisi Belgesi hakkında bilgi.',
+  h1: 'Homm Bitkisel Sertifikaları',
+  lead: 'Şirketin resmi sitesinde yayımladığı sertifika ve belgeler.',
+  body: `
+<ul class="tik buyuk sert">${sertifikalar.map(x => `<li>${ik.onay}${x}</li>`).join('')}</ul>
+<p>Belgelerin asıllarını ve güncel hâllerini şirketin resmi sayfasından görüntüleyebilirsiniz.</p>
+<p><a class="btn ghost" href="https://www.hommbitkisel.com.tr/sertifikalar" rel="nofollow noopener" target="_blank">Belgeleri resmi sitede görüntüleyin</a></p>
+<p class="not">Bu belgeler Homm Bitkisel Ürünler Pazarlama A.Ş.'ye aittir; bu sitede yalnızca bilgi amacıyla listelenmiştir.</p>
+${cta}
+${form()}` },
 
 { path: 'eylem-arslan/', title: `${AD} Kimdir? ${EKIP} Kurucu Lideri, Homm Bitkisel ${KARIYER} Lider`,
   desc: `${AD}: Homm Bitkisel'de ${KARIYER} kariyerinde bağımsız temsilci ve ${EKIP}'in kurucu lideri. Ekibe nasıl katılırsınız, size nasıl destek olur?`,
@@ -375,7 +449,7 @@ const layout = (p) => {
 <meta property="og:type" content="website"><meta property="og:locale" content="tr_TR">
 <meta property="og:title" content="${p.title}"><meta property="og:description" content="${p.desc}"><meta property="og:url" content="${url}">
 <meta property="og:image" content="${BASE}img/og.jpg"><meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#17503a">
+<meta name="theme-color" content="#50b6bb">
 <link rel="icon" href="${P}favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
@@ -384,8 +458,9 @@ ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`
 </head><body>
 <div class="ust">Bu site Homm Bitkisel'in resmi sitesi değildir; <b>bağımsız temsilci ${AD}</b> tarafından hazırlanmıştır.</div>
 <header><div class="ic">
-  <a class="marka" href="${P}"><span class="logo">EA</span><span>${EKIP}<small>${AD} · Homm Bitkisel Bağımsız Temsilcisi</small></span></a>
+  <a class="marka" href="${P}"><img class="hlogo" src="${P}img/homm-logo.png" alt="Homm Life" width="96" height="48"><span>${EKIP}<small>${AD} · Bağımsız Temsilci</small></span></a>
   <nav>${nav.map(([h, t]) => `<a href="${P}${h}"${h === p.path ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+  <a class="htel" href="tel:+${TEL_INT}">${ik.tel}<span><small>Telefon Numaramız</small>${TEL}</span></a>
   <a class="btn primary kucuk" href="${KAYIT}" rel="nofollow noopener" target="_blank">Ücretsiz Kayıt</a>
 </div></header>
 <main>
@@ -396,9 +471,9 @@ ${p.body}
 </main>
 <footer><div class="ic">
   <div class="fgrid">
-    <div><p class="fmarka">${EKIP}</p><p>${AD}<br>${KARIYER} Lider · Homm Bitkisel Bağımsız Temsilcisi</p><p><a href="tel:+${TEL_INT}">${TEL}</a></p></div>
+    <div><img class="flogo" src="${P}img/homm-logo.png" alt="Homm Life" width="120" height="60" loading="lazy"><p class="fmarka">${EKIP}</p><p>${AD}<br>${KARIYER} Lider · Homm Bitkisel Bağımsız Temsilcisi</p><p><a href="tel:+${TEL_INT}">${TEL}</a></p></div>
     <div><p class="fbas">Sayfalar</p>${nav.map(([h, t]) => `<a href="${P}${h}">${t}</a>`).join('')}</div>
-    <div><p class="fbas">Bilgi</p><a href="${P}kvkk/">KVKK Aydınlatma Metni</a><a href="${KAYIT}" rel="nofollow noopener" target="_blank">Resmi kayıt formu</a><a href="${WA_GENEL}" rel="nofollow noopener" target="_blank">WhatsApp</a></div>
+    <div><p class="fbas">Bilgi</p>${altnav.map(([h, t]) => `<a href="${P}${h}">${t}</a>`).join('')}<a href="${KAYIT}" rel="nofollow noopener" target="_blank">Resmi kayıt formu</a><a href="${WA_GENEL}" rel="nofollow noopener" target="_blank">WhatsApp</a></div>
   </div>
   <p class="yasal">Bu site bağımsız bir temsilci sayfasıdır. Homm Bitkisel ve Homm Life adları Homm Bitkisel Ürünler Pazarlama A.Ş.'ye aittir. Resmi site: hommbitkisel.com.tr · Müşteri hizmetleri: 444 77 97. Kazanç kişinin çalışmasına bağlıdır; garanti edilen gelir yoktur.</p>
 </div></footer>
@@ -410,7 +485,7 @@ ${p.body}
 </div>
 <script>
 function gonder(f){
-  var m='Merhaba, Homm Bitkisel üyeliği için aranmak istiyorum.\\nAd Soyad: '+f.ad.value.trim()+'\\nTelefon: '+f.tel.value.trim()+'\\nKonu: '+f.konu.value;
+  var m='Merhaba, Homm Bitkisel üyeliği için aranmak istiyorum.\\nAd Soyad: '+f.ad.value.trim()+'\\nTelefon: '+f.tel.value.trim()+'\\nŞehir: '+f.sehir.value.trim()+'\\nKonu: '+f.konu.value;
   window.open('https://wa.me/${TEL_INT}?text='+encodeURIComponent(m),'_blank');
   return false;
 }
@@ -419,7 +494,7 @@ function gonder(f){
 };
 
 const css = `
-:root{--y:#17503a;--y2:#2a7a57;--z:#0f8a5f;--acik:#e6f0e7;--k:#faf7f0;--m:#1b2a22;--g:#5a6a60;--c:#fff;--s:#e6e0d0;--altin:#b98a2f;--wa:#128c4b;--r:18px}
+:root{--y:#15777d;--y2:#1b8a90;--z:#50b6bb;--acik:#e3f5f6;--k:#f3fbfb;--m:#1d2b2c;--g:#566869;--c:#fff;--s:#d5e9ea;--altin:#1b8a90;--wa:#128c4b;--r:18px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;font:17px/1.65 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--m);background:var(--k);padding-bottom:62px;-webkit-font-smoothing:antialiased}
 img{max-width:100%;height:auto;display:block}
@@ -432,53 +507,66 @@ h1{font-size:clamp(32px,5.6vw,54px);line-height:1.1;margin:14px 0 16px;color:var
 h1 em{font-style:italic;color:var(--z)}
 h2{font-size:clamp(25px,3.4vw,34px);line-height:1.2;margin:0 0 14px;color:var(--y);text-wrap:balance}
 h3{margin:0 0 4px;font-size:18px;color:var(--y)}
-.lead{font-size:19.5px;color:#33443a;max-width:60ch}
+.lead{font-size:19.5px;color:#334647;max-width:60ch}
 .ustbaslik{margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--altin)}
 .not{font-size:14px;color:var(--g)}
 .rozet{display:inline-block;background:var(--acik);color:var(--y);font-size:13px;font-weight:700;padding:5px 12px;border-radius:99px}
-.rozet.zumrut{background:linear-gradient(135deg,#0f8a5f,#17503a);color:#fff;letter-spacing:.03em}
+.rozet.zumrut{background:linear-gradient(135deg,#12a577,#0c6b4d);color:#fff;letter-spacing:.03em}
 
 .ust{background:#fff7d6;color:#5c4a00;font-size:13px;text-align:center;padding:6px 12px}
 header{background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--s);position:sticky;top:0;z-index:20}
 header .ic{display:flex;align-items:center;gap:10px 22px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
 .marka{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;color:var(--y);text-decoration:none;line-height:1.15}
 .marka small{display:block;font-weight:500;font-size:11.5px;color:var(--g)}
+.hlogo{height:46px;width:auto}.flogo{height:54px;width:auto;filter:brightness(0) invert(1);margin-bottom:8px}
+.htel{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--m);font-weight:700;font-size:15px;line-height:1.2}
+.htel svg{width:38px;height:38px;padding:9px;border-radius:50%;background:var(--z);color:#fff}.htel small{display:block;font-weight:500;font-size:11.5px;color:var(--g)}
+.tanitim{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;margin:56px 0}
+.tanitim img{border-radius:24px;box-shadow:0 18px 40px rgba(21,119,125,.16);width:100%;object-fit:cover;aspect-ratio:4/3}
+.urunler{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin:20px 0}
+.urun{background:#fff;border:1px solid var(--s);border-radius:var(--r);padding:14px 14px 16px;text-decoration:none;color:var(--m);display:grid;gap:3px;transition:transform .15s,box-shadow .15s}
+.urun:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(21,119,125,.14)}
+.urun .ug{height:190px;display:grid;place-items:center;background:var(--acik);border-radius:12px;margin-bottom:8px;padding:12px}
+.urun img{max-height:166px;width:auto;max-width:100%;object-fit:contain}
+.urun small{color:var(--y2);font-weight:700;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.urun b{font-size:15.5px;line-height:1.3}.urun i{font-style:normal;color:var(--g);font-size:13.5px}
+.sert{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--z),var(--y));color:#fff;display:grid;place-items:center;font-family:"Playfair Display",serif;font-size:17px}
-nav{display:flex;gap:4px 16px;font-size:14.5px;flex:1;flex-wrap:wrap}
+nav{display:flex;gap:2px 14px;font-size:14px;flex:1;flex-wrap:wrap}header .ic{max-width:1320px}
 nav a{color:var(--m);text-decoration:none;padding:4px 0;border-bottom:2px solid transparent;white-space:nowrap}
 nav a:hover,nav a[aria-current]{border-color:var(--z);color:var(--y)}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:99px;font-weight:700;text-decoration:none;border:2px solid var(--y);cursor:pointer;font-size:16.5px;font-family:inherit;transition:transform .15s,box-shadow .15s,background .15s}
 .btn:hover{transform:translateY(-1px)}
-.btn.primary{background:var(--y);color:#fff;box-shadow:0 8px 20px rgba(23,80,58,.25)}.btn.primary:hover{background:var(--y2);border-color:var(--y2)}
+.btn.primary{background:var(--y);color:#fff;box-shadow:0 8px 20px rgba(21,119,125,.25)}.btn.primary:hover{background:var(--y2);border-color:var(--y2)}
 .btn.ghost{background:transparent;color:var(--y)}.btn.ghost:hover{background:var(--acik)}
 .btn.wa{background:var(--wa);border-color:var(--wa);color:#fff;width:100%}
 .btn.kucuk{padding:9px 18px;font-size:14.5px;box-shadow:none}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0 10px}
 
-.hero{background:radial-gradient(1200px 500px at 85% 0%,#dcebdd 0%,transparent 60%),linear-gradient(180deg,#f1f6ee,var(--k))}
+.hero{background:radial-gradient(1200px 520px at 85% 0%,#c9eff1 0%,transparent 62%),linear-gradient(180deg,#e3f7f8,var(--k))}
 .heroic{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding-top:48px;padding-bottom:56px}
 .herogorsel{position:relative}
-.herogorsel img{border-radius:28px 28px 28px 120px;box-shadow:0 30px 60px rgba(23,80,58,.22);aspect-ratio:4/5;object-fit:cover;width:100%}
+.herogorsel img{border-radius:28px 28px 28px 120px;box-shadow:0 30px 60px rgba(21,119,125,.22);aspect-ratio:4/5;object-fit:cover;width:100%}
 .yuzen{position:absolute;left:-18px;bottom:28px;background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 14px 34px rgba(0,0,0,.14);font-size:13.5px;line-height:1.35}
 .yuzen b{display:block;color:var(--y);font-size:15px}.yuzen span{color:var(--g)}
 .cip{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px;font-weight:500;color:var(--y)}
 .cip li{display:flex;align-items:center;gap:6px}.cip svg{width:18px;height:18px;color:var(--z);stroke-width:2.6}
 
-.sayfabas{background:linear-gradient(180deg,#eaf2e8,var(--k));padding:38px 0 8px}
+.sayfabas{background:linear-gradient(180deg,#dff4f5,var(--k));padding:38px 0 8px}
 .govde{padding-top:8px;padding-bottom:56px}
 .govde>h2{margin-top:44px}
 .bolum{margin:64px 0}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:22px 0}
-.card{background:var(--c);border:1px solid var(--s);border-radius:var(--r);padding:20px 22px;box-shadow:0 2px 10px rgba(27,42,34,.04)}
+.card{background:var(--c);border:1px solid var(--s);border-radius:var(--r);padding:20px 22px;box-shadow:0 2px 10px rgba(29,43,44,.04)}
 .card p{margin:0;color:#3d4c43}
 .card.ikon>svg{width:44px;height:44px;padding:10px;border-radius:12px;background:var(--acik);color:var(--y);margin-bottom:12px}
-.card.link{text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}.card.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(23,80,58,.12)}
+.card.link{text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}.card.link:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(21,119,125,.12)}
 
-.bio{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;background:linear-gradient(135deg,#fff,#f0f6ef);border:1px solid var(--s);border-radius:26px;padding:30px;margin:56px 0;box-shadow:0 12px 34px rgba(23,80,58,.08)}
+.bio{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;background:linear-gradient(135deg,#fff,#e9f7f8);border:1px solid var(--s);border-radius:26px;padding:30px;margin:56px 0;box-shadow:0 12px 34px rgba(21,119,125,.08)}
 .bio h2{margin:10px 0 2px}.bio .unvan{margin:0 0 10px;font-weight:700;color:var(--altin);font-size:15px}
 .bio p{margin:0 0 10px}
-.avatar{width:150px;height:150px;border-radius:50%;object-fit:cover;border:5px solid #fff;box-shadow:0 10px 26px rgba(23,80,58,.22)}
+.avatar{width:150px;height:150px;border-radius:50%;object-fit:cover;border:5px solid #fff;box-shadow:0 10px 26px rgba(21,119,125,.22)}
 .avatar.b{width:190px;height:190px}
 .avatar.mono{display:grid;place-items:center;background:linear-gradient(135deg,var(--z),var(--y));color:#fff;font-family:"Playfair Display",serif;font-size:52px}
 
@@ -495,23 +583,23 @@ nav a:hover,nav a[aria-current]{border-color:var(--z);color:var(--y)}
 .tik.buyuk li{background:var(--c);border:1px solid var(--s);border-radius:14px;padding:12px 16px}
 
 .bant{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;margin:64px 0}
-.bant img,.gorsel img{border-radius:24px;box-shadow:0 18px 40px rgba(23,80,58,.14);width:100%;object-fit:cover}
+.bant img,.gorsel img{border-radius:24px;box-shadow:0 18px 40px rgba(21,119,125,.14);width:100%;object-fit:cover}
 .gorsel{margin:26px 0}.gorsel img{aspect-ratio:16/8}
 
 .formkart{display:grid;grid-template-columns:1fr 1.1fr;gap:34px;background:var(--y);color:#eaf3ec;border-radius:28px;padding:36px;margin:64px 0;scroll-margin-top:90px}
 .formkart h2{color:#fff;margin-top:12px}.formkart .rozet{background:rgba(255,255,255,.14);color:#fff}
-.formkart .tik svg{color:#8fe0b8}
+.formkart .tik svg{color:#aeeef1}
 .formkart form{background:#fff;color:var(--m);border-radius:20px;padding:22px;display:grid;gap:12px;align-content:start}
 label{display:grid;gap:5px;font-weight:700;font-size:14.5px}
 input,select{font:inherit;padding:12px 14px;border:1.5px solid #cfc8b4;border-radius:12px;background:#fff;width:100%}
-input:focus,select:focus{outline:none;border-color:var(--z);box-shadow:0 0 0 3px rgba(15,138,95,.18)}
+input:focus,select:focus{outline:none;border-color:var(--z);box-shadow:0 0 0 3px rgba(80,182,187,.18)}
 .onay{grid-template-columns:22px 1fr;align-items:start;font-weight:400;font-size:13px;color:var(--g)}
 .onay input{width:18px;height:18px;margin-top:3px;padding:0}
 form small{color:var(--g);font-size:12.5px}
 
 .sss{display:grid;gap:10px;margin:18px 0}
 details{background:var(--c);border:1px solid var(--s);border-radius:16px;padding:15px 20px}
-details[open]{border-color:var(--y2);box-shadow:0 6px 18px rgba(23,80,58,.08)}
+details[open]{border-color:var(--y2);box-shadow:0 6px 18px rgba(21,119,125,.08)}
 summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px}
 summary::-webkit-details-marker{display:none}
 summary::after{content:"+";font-size:22px;line-height:1;color:var(--z)}details[open] summary::after{content:"–"}
@@ -522,21 +610,22 @@ table{width:100%;border-collapse:collapse;font-size:15.5px}
 th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--s)}th{background:var(--acik);color:var(--y)}
 tr:last-child td{border-bottom:0}
 
-footer{background:#12382a;color:#cfe0d5;font-size:14.5px;padding:44px 0 26px}
+footer{background:#0f5a5f;color:#d3eced;font-size:14.5px;padding:44px 0 26px}
 footer a{color:#fff;text-decoration:none;display:block;padding:2px 0}footer a:hover{text-decoration:underline}
 .fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px}
 .fmarka{font-size:24px;color:#fff;margin:0 0 6px}.fbas{font-weight:700;color:#fff;margin:0 0 8px}
-.yasal{border-top:1px solid rgba(255,255,255,.14);margin-top:26px;padding-top:16px;font-size:12.5px;color:#a9c2b3}
+.yasal{border-top:1px solid rgba(255,255,255,.14);margin-top:26px;padding-top:16px;font-size:12.5px;color:#a8d3d5}
 
 .wayuzen{position:fixed;right:22px;bottom:22px;width:58px;height:58px;border-radius:50%;background:var(--wa);color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px rgba(18,140,75,.45);z-index:15}
 .wayuzen svg{width:32px;height:32px}
 .alt{position:fixed;left:0;right:0;bottom:0;display:none;grid-template-columns:1.3fr 1fr .8fr;z-index:25;box-shadow:0 -4px 16px rgba(0,0,0,.12)}
 .alt a{padding:16px 6px;text-align:center;font-weight:700;text-decoration:none;color:#fff;font-size:15.5px}
-.alt .k{background:var(--y)}.alt .w{background:var(--wa)}.alt .a{background:#2c3d33}
+.alt .k{background:var(--y)}.alt .w{background:var(--wa)}.alt .a{background:#234446}
 @media(min-width:861px){body{padding-bottom:0}}
 @media(max-width:860px){
   .alt{display:grid}.wayuzen{display:none}
-  header .ic{gap:8px 14px}header .btn{display:none}
+  header .ic{gap:8px 14px}header .btn,.htel{display:none}.hlogo{height:40px}
+  .tanitim{grid-template-columns:1fr;gap:22px;margin:40px 0}.urunler{grid-template-columns:repeat(2,1fr);gap:10px}.urun .ug{height:150px}.urun img{max-height:128px}
   nav{flex-basis:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}nav::-webkit-scrollbar{display:none}
   .heroic{grid-template-columns:1fr;gap:30px;padding-top:28px;padding-bottom:36px}
   .herogorsel{max-width:440px}.herogorsel img{border-radius:24px 24px 24px 80px;aspect-ratio:5/5}.yuzen{left:10px;bottom:14px}
@@ -550,7 +639,7 @@ if (existsSync(OUT)) rmSync(OUT, { recursive: true });
 for (const p of pages) { mkdirSync(`${OUT}/${p.path}`, { recursive: true }); writeFileSync(`${OUT}/${p.path}index.html`, layout(p)); }
 cpSync('assets', `${OUT}/img`, { recursive: true });
 writeFileSync(`${OUT}/style.css`, css);
-writeFileSync(`${OUT}/favicon.svg`, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#17503a"/><text x="32" y="44" font-size="34" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-weight="700">EA</text></svg>`);
+writeFileSync(`${OUT}/favicon.svg`, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1b8a90"/><text x="32" y="44" font-size="34" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-weight="700">EA</text></svg>`);
 writeFileSync(`${OUT}/.nojekyll`, '');
 writeFileSync(`${OUT}/robots.txt`, INDEX ? `User-agent: *\nAllow: /\nSitemap: ${BASE}sitemap.xml\n` : `User-agent: *\nDisallow: /\n`);
 const today = new Date().toISOString().slice(0, 10);
