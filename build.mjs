@@ -29,6 +29,9 @@ const altnav = [['ayricalikli-musteri/', 'Ayrıcalıklı Müşteri'], ['eylem-ar
 
 // Görseller ve adlar hommbitkisel.com.tr resmi ürün sayfasından alınmıştır.
 const URUN_URL = MAGAZA;
+// Mağaza en fazla 20 ürün gösterir. Tüm katalog için önce mağaza linki açılır (referans kaydedilir), sonra aynı sekme kataloğa geçer.
+const KATALOG = 'https://www.hommbitkisel.com.tr/urunler-b/tumu';
+const tumBtn = (cls = 'btn primary', yazi = 'Tüm Ürünleri Gör (350+)') => `<a class="${cls}" href="${MAGAZA}" onclick="return tumUrunler()" rel="nofollow" target="_blank">${yazi}</a>`;
 const urunler = [
   ['balli-krem', 'Ballı Krem', '50 ml', 'Cilt Bakımı'],
   ['ozonlu-zeytinyagi', 'Ozonla Zenginleştirilmiş Zeytinyağı', '30 ml', 'Cilt Bakımı'],
@@ -218,7 +221,7 @@ ${bioKart}
   <p class="indirim"><b>%30</b><span>Üye olduğunuzda bu ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız.</span></p>
   ${urunGrid([0, 1, 2, 6, 7, 10, 11, 14].map(i => urunler[i]))}
   ${uyeBant}
-  <p><a href="${P}homm-bitkisel-urunleri/">Tüm ürün seçkisini görün →</a></p>
+  <div class="cta">${tumBtn('btn ghost')}</div>
 </section>
 
 ${form()}
@@ -322,9 +325,10 @@ ${form()}` },
   body: `
 ${['Cilt Bakımı', 'Saç ve Kişisel Bakım', 'Ev Temizliği', 'Kahve ve İçecek'].map(k => `<h2>${k}</h2>${urunGrid(urunler.filter(u => u[3] === k))}`).join('')}
 <p class="indirim"><b>%30</b><span>Üye olduğunuzda ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız. Üyelik ücretsizdir.</span></p>
-<p>Burada yalnızca bir seçki var; katalogda 350'den fazla ürün bulunuyor.</p>
+<p>Burada yalnızca bir seçki var; katalogda 350'den fazla ürün bulunuyor. Hepsini benim referansımla görmek için aşağıdaki butonu kullanın.</p>
 ${uyeBant}
-<p><a class="btn primary" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Mağazamda tüm ürünleri ve fiyatları görün</a></p>
+<div class="cta">${tumBtn()}<a class="btn ghost" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Öne Çıkan 20 Ürün</a></div>
+<p class="not">“Tüm Ürünleri Gör” butonu mağazamı açar ve birkaç saniye içinde tüm kataloğa geçer; sayfanın üstünde “${AD} referansı ile alışveriş yapıyorsunuz” yazısını görürsünüz.</p>
 <h2>Nasıl sipariş verilir?</h2>
 <p>Ürünleri üye olmadan da alabilirsiniz; ancak üye olduğunuzda aynı ürünleri %30 indirimli alırsınız. Üye olmadan almak için ürün kartına ya da mağaza butonuna tıklayın; üye olduysanız kendi hesabınıza girip sepete ekleyerek indirimli sipariş verirsiniz. Hangi ürünün size uygun olduğunu sormak isterseniz bize yazın.</p>
 <p class="not">Ürün görselleri ve adları Homm Bitkisel'e aittir; güncel fiyat ve içerik mağaza sayfasında yer alır. Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
@@ -527,6 +531,12 @@ ${p.body}
   <a class="a" href="tel:+${TEL_INT}">Ara</a>
 </div>
 <script>
+function tumUrunler(){
+  var w=window.open('${MAGAZA}','_blank');
+  if(!w) return true;
+  setTimeout(function(){try{w.location.href='${KATALOG}'}catch(e){}},3500);
+  return false;
+}
 function gonder(f){
   var m='Merhaba, Homm Bitkisel üyeliği için aranmak istiyorum.\\nAd Soyad: '+f.ad.value.trim()+'\\nTelefon: '+f.tel.value.trim()+'\\nŞehir: '+f.sehir.value.trim()+'\\nKonu: '+f.konu.value;
   window.open('https://wa.me/${TEL_INT}?text='+encodeURIComponent(m),'_blank');

@@ -69,6 +69,12 @@
   <a class="a" href="tel:+905425806233">Ara</a>
 </div>
 <script>
+function tumUrunler(){
+  var w=window.open('https://www.hommbitkisel.com.tr/magaza/eylem-arslan-HOMM903621099','_blank');
+  if(!w) return true;
+  setTimeout(function(){try{w.location.href='https://www.hommbitkisel.com.tr/urunler-b/tumu'}catch(e){}},3500);
+  return false;
+}
 function gonder(f){
   var m='Merhaba, Homm Bitkisel üyeliği için aranmak istiyorum.\nAd Soyad: '+f.ad.value.trim()+'\nTelefon: '+f.tel.value.trim()+'\nŞehir: '+f.sehir.value.trim()+'\nKonu: '+f.konu.value;
   window.open('https://wa.me/905425806233?text='+encodeURIComponent(m),'_blank');
