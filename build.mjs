@@ -12,7 +12,9 @@ const AD = 'Eylem Arslan';
 const EKIP = 'Arslan Ekip';
 const KARIYER = 'Emerald';
 const TEL = '0542 580 62 33', TEL_INT = '905425806233';
-const KAYIT = 'https://www.hommbitkisel.com.tr/yeni-kayit/HOMM903621099';
+const KAYIT = 'https://www.hommbitkisel.com.tr/yeni-kayit/eylem-arslan-HOMM903621099';            // yeni kayıt linki
+const KAYIT_AM = KAYIT + '?_k=e32304929cfd2ee1';                                               // ayrıcalıklı müşteri linki
+const MAGAZA = 'https://www.hommbitkisel.com.tr/magaza/eylem-arslan-HOMM903621099';             // perakende satış linki
 const WA = (m) => `https://wa.me/${TEL_INT}?text=${encodeURIComponent(m)}`;
 const WA_GENEL = WA('Merhaba, Homm Bitkisel üyeliği hakkında bilgi almak istiyorum.');
 const OUT = 'docs';
@@ -20,13 +22,13 @@ const FOTO = existsSync('assets/eylem-arslan.jpg');
 
 const nav = [
   ['', 'Ana Sayfa'], ['hakkimizda/', 'Hakkımızda'], ['hizli-basvuru/', 'Hızlı Başvuru'], ['homm-bitkisel-urunleri/', 'Ürünler'],
-  ['homm-bitkisel-kayit/', 'Nasıl Kayıt Olunur'], ['homm-bitkisel-temsilci-ol/', 'Temsilci Ol'], ['sertifikalar/', 'Sertifikalar'],
+  ['homm-bitkisel-kayit/', 'Nasıl Kayıt Olunur'], ['homm-bitkisel-temsilci-ol/', 'Temsilci Ol'], ['kazanc-plani/', 'Kazanç Planı'], ['sertifikalar/', 'Sertifikalar'],
   ['sik-sorulan-sorular/', 'Sık Sorulanlar'], ['iletisim/', 'İletişim'],
 ];
 const altnav = [['ayricalikli-musteri/', 'Ayrıcalıklı Müşteri'], ['eylem-arslan/', 'Eylem Arslan Kimdir?'], ['kvkk/', 'KVKK Aydınlatma Metni']];
 
 // Görseller ve adlar hommbitkisel.com.tr resmi ürün sayfasından alınmıştır.
-const URUN_URL = 'https://www.hommbitkisel.com.tr/urunler/tumu';
+const URUN_URL = MAGAZA;
 const urunler = [
   ['balli-krem', 'Ballı Krem', '50 ml', 'Cilt Bakımı'],
   ['ozonlu-zeytinyagi', 'Ozonla Zenginleştirilmiş Zeytinyağı', '30 ml', 'Cilt Bakımı'],
@@ -47,7 +49,8 @@ const urunler = [
 ];
 const urunKart = ([d, ad, boy, kat]) => `<a class="urun" href="${URUN_URL}" rel="nofollow noopener" target="_blank"><span class="ug"><img src="${P}img/urun/${d}.png" alt="Homm ${ad} ${boy}" loading="lazy"></span><small>${kat}</small><b>${ad}</b><i>${boy}</i></a>`;
 const urunGrid = (list) => `<div class="urunler">${list.map(urunKart).join('')}</div>`;
-const sertifikalar = ['Helal Kozmetik Sertifikası', 'Helal Gıda Sertifikası', 'Helal Deterjan Sertifikası', 'İyi Üretim Uygulamaları (GMP) Sertifikası', 'Gıda Güvenliği Yönetimi Sertifikası', 'Kalite Yönetimi Sertifikası', 'İşletme Kayıt Belgesi', 'Doğrudan Satış Yetkisi Belgesi'];
+const sertifikalar = [[11, 'Doğrudan Satış Yetki Belgesi', 'T.C. Ticaret Bakanlığı'], [1, 'Helal Kozmetik Sertifikası', 'Helal uygunluk belgesi'], [2, 'Helal Gıda Sertifikası', 'Helal uygunluk belgesi'], [8, 'Helal Deterjan Sertifikası', 'Helal uygunluk belgesi'], [3, 'İyi Üretim Uygulamaları (GMP)', 'Good Manufacturing Practices'], [4, 'Gıda Güvenliği Yönetimi', 'Food Safety Management'], [5, 'Kalite Yönetimi', 'Quality Management'], [10, 'İşletme Kayıt Belgesi', 'Resmi kayıt belgesi']];
+const uyeBant = `<div class="uyebant"><div><b>Üye olun, daha avantajlı alın</b><span>Üyelik ücretsiz · hoş geldin avantajı · ürünlerde <b>%30 indirim</b></span></div><a class="btn primary kucuk" href="${KAYIT}" rel="nofollow noopener" target="_blank">Ücretsiz Üye Ol</a><a class="btn ghost kucuk" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Üye olmadan alışveriş</a></div>`;
 
 const ik = {
   hediye: '<svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 110-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 100-5C13 2 12 7 12 7z"/></svg>',
@@ -87,10 +90,11 @@ const form = (baslik = 'Sizi arayalım') => `
 
 const cta = `
 <div class="cta">
-  <a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Kayıt Ol</a>
+  <a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Üye Ol</a>
+  <a class="btn ghost" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Üye Olmadan Alışveriş Yap</a>
   <a class="btn ghost" href="#form">Beni Arayın</a>
 </div>
-<p class="not">Kayıt butonu sizi Homm Bitkisel'in resmi kayıt formuna götürür. Formda “Tavsiye eden” alanında <b>${AD}</b> yazdığını göreceksiniz.</p>`;
+<p class="not">Üyelik ücretsizdir; üye olanlar hoş geldin avantajı kazanır ve ürünleri %30 indirimli alır. Kayıt formunda “Tavsiye eden” alanında <b>${AD}</b> yazdığını göreceksiniz.</p>`;
 
 const avatar = (cls = '') => FOTO
   ? `<img class="avatar ${cls}" src="${P}img/eylem-arslan.jpg" alt="${AD} – ${EKIP} kurucu lideri" loading="lazy">`
@@ -134,13 +138,14 @@ const pages = [
   <div>
     <span class="rozet">${EKIP} · Homm Bitkisel Bağımsız Temsilcisi</span>
     <h1>Homm Bitkisel'e <em>ücretsiz</em> üye olun, ilk günden yalnız kalmayın</h1>
-    <p class="lead">Ben ${KARIYER} lider <b>${AD}</b>. Üye olun, ürünleri <b>%30 indirimli</b> alın. İster yalnızca alışveriş yapın, ister kendi işinizi kurun; kayıt formunu birlikte dolduralım, ilk adımları ekibimle birlikte atın.</p>
+    <p class="lead">Ben ${KARIYER} lider <b>${AD}</b>. Üyelik ücretsiz; üye olan <b>hoş geldin avantajı</b> kazanır ve ürünleri <b>%30 indirimli</b> alır. İster yalnızca alışveriş yapın, ister kendi işinizi kurun; kayıt formunu birlikte dolduralım, ilk adımları ekibimle birlikte atın.</p>
     <div class="cta">
-      <a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Kayıt Ol</a>
-      <a class="btn ghost" href="#form">Beni Arayın</a>
+      <a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Üye Ol</a>
+      <a class="btn ghost" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Üye Olmadan Alışveriş Yap</a>
     </div>
+    <p class="altlink"><a href="#form">Önce bilgi almak istiyorum, beni arayın →</a></p>
     <ul class="cip">
-      <li>${ik.onay}Üyelere %30 indirim</li><li>${ik.onay}Giriş ücreti yok</li><li>${ik.onay}Satış zorunluluğu yok</li><li>${ik.onay}Birebir destek</li>
+      <li>${ik.onay}Üyelere %30 indirim</li><li>${ik.onay}Hoş geldin avantajı</li><li>${ik.onay}Üyelik ücretsiz</li><li>${ik.onay}Satış zorunluluğu yok</li><li>${ik.onay}Birebir destek</li>
     </ul>
   </div>
   <div class="herogorsel">
@@ -164,7 +169,7 @@ const pages = [
   <p class="ustbaslik">Neden bu ekip?</p>
   <h2>Üyelikte sizi neler bekliyor?</h2>
   <div class="grid3">
-    <div class="card ikon">${ik.hediye}<h3>Ücretsiz üyelik</h3><p>Kayıtta giriş ücreti veya sermaye istenmez.</p></div>
+    <div class="card ikon">${ik.hediye}<h3>Ücretsiz üyelik + hoş geldin</h3><p>Kayıtta ücret veya sermaye istenmez; yeni üyeler hoş geldin avantajı kazanır.</p></div>
     <div class="card ikon">${ik.sepet}<h3>%30 üye indirimi</h3><p>Üye olduktan sonra ürünleri, üye olmadan alınan fiyata göre %30 indirimli alırsınız.</p></div>
     <div class="card ikon">${ik.ev}<h3>Evden çalışma</h3><p>Telefonunuzla, kendi saatlerinizde çalışırsınız.</p></div>
     <div class="card ikon">${ik.egitim}<h3>Eğitim</h3><p>Panel, sipariş ve ürün bilgisi eğitimlerine katılırsınız.</p></div>
@@ -212,7 +217,8 @@ ${bioKart}
   <h2>Öne çıkan Homm ürünleri</h2>
   <p class="indirim"><b>%30</b><span>Üye olduğunuzda bu ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız.</span></p>
   ${urunGrid([0, 1, 2, 6, 7, 10, 11, 14].map(i => urunler[i]))}
-  <p><a class="btn ghost" href="${P}homm-bitkisel-urunleri/">Tüm ürün kategorilerini görün</a></p>
+  ${uyeBant}
+  <p><a href="${P}homm-bitkisel-urunleri/">Tüm ürün seçkisini görün →</a></p>
 </section>
 
 ${form()}
@@ -281,15 +287,19 @@ ${form('Temsilcilik hakkında sizi arayalım')}` },
 { path: 'ayricalikli-musteri/', title: `Homm Bitkisel Ayrıcalıklı Müşteri Üyeliği Nedir? | ${AD}`,
   desc: `Satış yapmadan, ürünleri %30 indirimli almak isteyenler için Homm Bitkisel Ayrıcalıklı Müşteri üyeliği: nedir, nasıl kayıt olunur, temsilcilikten farkı ne?`,
   h1: 'Homm Bitkisel Ayrıcalıklı Müşteri Üyeliği',
-  lead: 'Satış yapmak ya da ekip kurmak istemiyor, yalnızca ürünleri kendiniz için almak mı istiyorsunuz? Kayıt formundaki Ayrıcalıklı Müşteri seçeneği bunun için var.',
+  lead: 'Satış yapmak ya da ekip kurmak istemiyor, yalnızca ürünleri kendiniz için almak mı istiyorsunuz? Ayrıcalıklı Müşteri üyeliği bunun için var.',
   body: `
-${cta}
+<div class="cta">
+  <a class="btn primary" href="${KAYIT_AM}" rel="nofollow noopener" target="_blank">Ayrıcalıklı Müşteri Ol (Ücretsiz)</a>
+  <a class="btn ghost" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Üye Olmadan Alışveriş Yap</a>
+  <a class="btn ghost" href="#form">Beni Arayın</a>
+</div>
 <h2>Ayrıcalıklı Müşteri kimdir?</h2>
 <p>Ayrıcalıklı Müşteri, Homm Bitkisel'e yalnızca alışveriş amacıyla üye olan kişidir. Satış yapma zorunluluğu yoktur. Siparişlerinizi resmi site üzerinden kendi hesabınızla verirsiniz.</p>
 <p class="indirim"><b>%30</b><span>Üye olduktan sonra ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız.</span></p>
 <h2>Nasıl kayıt olunur?</h2>
 <ol class="adimlar">
-  <li><span>1</span><div><h3>Kayıt bağlantısını açın</h3><p>Bu sayfadaki “Hemen Ücretsiz Kayıt Ol” butonunu kullanın.</p></div></li>
+  <li><span>1</span><div><h3>Kayıt bağlantısını açın</h3><p>Bu sayfadaki “Ayrıcalıklı Müşteri Ol” butonunu kullanın.</p></div></li>
   <li><span>2</span><div><h3>Ayrıcalıklı Müşteri'yi seçin</h3><p>Sayfanın başındaki <i>Ayrıcalıklı Müşteri (Sadece alışveriş yapacağım)</i> kutusunu işaretleyin.</p></div></li>
   <li><span>3</span><div><h3>Formu gönderin</h3><p>İletişim ve kişisel bilgilerinizi girip formu gönderin.</p></div></li>
 </ol>
@@ -308,15 +318,16 @@ ${form()}` },
 { path: 'homm-bitkisel-urunleri/', title: `Homm Bitkisel Ürünleri: Kategoriler ve Sipariş | ${AD}`,
   desc: `Homm Bitkisel ürün kategorileri: cilt bakımı, saç bakımı, kişisel bakım, ev temizliği ve daha fazlası. Üye olarak nasıl sipariş verilir?`,
   h1: 'Homm Bitkisel Ürünleri',
-  lead: 'Homm Bitkisel\'in ürün yelpazesi kişisel bakımdan ev temizliğine uzanır. Güncel ürünler, içerikler ve fiyatlar için tek doğru kaynak şirketin resmi kataloğudur.',
+  lead: 'Ürünleri mağaza linkimden üye olmadan alabilir, ücretsiz üye olursanız aynı ürünleri %30 indirimli alırsınız.',
   body: `
 ${['Cilt Bakımı', 'Saç ve Kişisel Bakım', 'Ev Temizliği', 'Kahve ve İçecek'].map(k => `<h2>${k}</h2>${urunGrid(urunler.filter(u => u[3] === k))}`).join('')}
 <p class="indirim"><b>%30</b><span>Üye olduğunuzda ürünleri, üye olmadan alınan fiyata göre <b>%30 indirimli</b> alırsınız. Üyelik ücretsizdir.</span></p>
 <p>Burada yalnızca bir seçki var; katalogda 350'den fazla ürün bulunuyor.</p>
-<p><a class="btn ghost" href="${URUN_URL}" rel="nofollow noopener" target="_blank">Resmi sitede tüm ürünleri ve fiyatları görün</a></p>
+${uyeBant}
+<p><a class="btn primary" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Mağazamda tüm ürünleri ve fiyatları görün</a></p>
 <h2>Nasıl sipariş verilir?</h2>
-<p>Ürünleri üye olmadan da alabilirsiniz; ancak üye olduğunuzda aynı ürünleri %30 indirimli alırsınız. Üyeliğiniz açıldıktan sonra resmi sitedeki hesabınıza girip sepete ekleyerek sipariş verirsiniz. Hangi ürünün size uygun olduğunu sormak isterseniz bize yazın.</p>
-<p class="not">Ürün görselleri ve adları Homm Bitkisel'in resmi sitesinden alınmıştır; güncel fiyat ve içerik için resmi siteye bakın. Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
+<p>Ürünleri üye olmadan da alabilirsiniz; ancak üye olduğunuzda aynı ürünleri %30 indirimli alırsınız. Üye olmadan almak için ürün kartına ya da mağaza butonuna tıklayın; üye olduysanız kendi hesabınıza girip sepete ekleyerek indirimli sipariş verirsiniz. Hangi ürünün size uygun olduğunu sormak isterseniz bize yazın.</p>
+<p class="not">Ürün görselleri ve adları Homm Bitkisel'e aittir; güncel fiyat ve içerik mağaza sayfasında yer alır. Bu sayfadaki bilgiler genel tanıtım amaçlıdır; ürünler tıbbi tedavi amacı taşımaz, sağlık sorunlarınız için hekiminize danışın.</p>
 ${cta}
 ${form('Ürünler hakkında bilgi alın')}` },
 
@@ -335,7 +346,7 @@ ${form('Ürünler hakkında bilgi alın')}` },
 </div>
 ${bioKart}
 <h2>Homm Bitkisel hakkında</h2>
-<p>Homm Bitkisel Ürünler Pazarlama A.Ş.; merkezi İstanbul Maltepe'de bulunan, ürünlerini bağımsız temsilciler aracılığıyla satan bir doğrudan satış şirketidir. Şirketin belgeleri için <a href="${P}sertifikalar/">Sertifikalar</a> sayfasına bakabilirsiniz.</p>
+<p>Homm Bitkisel Ürünler Pazarlama A.Ş.; merkezi İstanbul Maltepe'de bulunan, ürünlerini bağımsız temsilciler aracılığıyla satan bir doğrudan satış şirketidir. Şirketin belgeleri <a href="${P}sertifikalar/">Sertifikalar</a>, kazanç sistemi ise <a href="${P}kazanc-plani/">Kazanç Planı</a> sayfasında.</p>
 <div class="cta">
   <a class="btn primary" href="${P}hizli-basvuru/">Hızlı Başvuru Formu</a>
   <a class="btn ghost" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Kayıt Ol</a>
@@ -357,16 +368,41 @@ ${form('Başvurunuzu bırakın')}
 <div class="cta"><a class="btn primary" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Kayıt Ol</a></div>` },
 
 { path: 'sertifikalar/', title: `Homm Bitkisel Sertifikaları ve Belgeleri | ${AD}`,
-  desc: 'Homm Bitkisel\'in helal sertifikaları, GMP, kalite ve gıda güvenliği belgeleri ile Doğrudan Satış Yetkisi Belgesi hakkında bilgi.',
+  desc: 'Homm Bitkisel\'in Ticaret Bakanlığı Doğrudan Satış Yetki Belgesi, helal sertifikaları, GMP, kalite ve gıda güvenliği belgeleri bu sayfada.',
   h1: 'Homm Bitkisel Sertifikaları',
-  lead: 'Şirketin resmi sitesinde yayımladığı sertifika ve belgeler.',
+  lead: 'Şirketin sertifika ve belgeleri aşağıda; büyütmek için üzerine dokunun.',
+  genis: true,
   body: `
-<ul class="tik buyuk sert">${sertifikalar.map(x => `<li>${ik.onay}${x}</li>`).join('')}</ul>
-<p>Belgelerin asıllarını ve güncel hâllerini şirketin resmi sayfasından görüntüleyebilirsiniz.</p>
-<p><a class="btn ghost" href="https://www.hommbitkisel.com.tr/sertifikalar" rel="nofollow noopener" target="_blank">Belgeleri resmi sitede görüntüleyin</a></p>
-<p class="not">Bu belgeler Homm Bitkisel Ürünler Pazarlama A.Ş.'ye aittir; bu sitede yalnızca bilgi amacıyla listelenmiştir.</p>
+<div class="sertgrid">${sertifikalar.map(([no, ad, alt]) => `<a class="sertkart" href="${P}img/sertifika/${no}.jpg" target="_blank"><img src="${P}img/sertifika/${no}.jpg" alt="Homm Bitkisel ${ad}" loading="lazy"><b>${ad}</b><small>${alt}</small></a>`).join('')}</div>
+<p class="not">Bu belgeler Homm Bitkisel Ürünler Pazarlama A.Ş.'ye aittir ve bilgi amacıyla gösterilmektedir.</p>
 ${cta}
 ${form()}` },
+
+{ path: 'kazanc-plani/', title: `Homm Bitkisel Kazanç Planı Nasıl İşler? | ${EKIP} · ${AD}`,
+  desc: `Homm Bitkisel kazanç planı: perakende satış kârı, ciro puanı (CP), aktiflik puanı (AP) ve kariyer basamakları. ${KARIYER} lider ${AD} anlatıyor.`,
+  h1: 'Homm Bitkisel Kazanç Planı',
+  lead: 'Homm Bitkisel\'de kazanç üç kaynaktan oluşur: kendi satışınız, ekibinizin cirosu ve ulaştığınız kariyer.',
+  body: `
+<div class="grid3">
+  <div class="card ikon">${ik.sepet}<h3>1. Perakende satış kârı</h3><p>Üye olarak ürünleri %30 indirimli alır, çevrenize liste fiyatından satarsınız; aradaki fark sizin kazancınızdır.</p></div>
+  <div class="card ikon">${ik.ekip}<h3>2. Ekip primi</h3><p>Kendi kayıt linkinizle üye kaydeder, ekibinizin yaptığı ciro üzerinden prim kazanırsınız.</p></div>
+  <div class="card ikon">${ik.egitim}<h3>3. Kariyer gelirleri</h3><p>Cironuz büyüdükçe kariyer basamaklarında yükselir, basamağa bağlı ek gelirlere hak kazanırsınız.</p></div>
+</div>
+<h2>Plandaki temel kavramlar</h2>
+<div class="tablo"><table>
+  <tr><th>Kavram</th><th>Ne demek?</th></tr>
+  <tr><td><b>CP</b> (Ciro Puanı)</td><td>Her ürünün bir ciro puanı vardır. Sizin ve ekibinizin alışverişleri CP olarak toplanır; kariyer ve primler bu puana göre hesaplanır.</td></tr>
+  <tr><td><b>AP</b> (Aktiflik Puanı)</td><td>O dönem aktif sayılmanız için kendi alışverişinizle doldurmanız gereken puandır.</td></tr>
+  <tr><td><b>Kariyer</b></td><td>Toplam cironuza göre ulaştığınız basamaktır. ${AD} bu basamaklardan <b>${KARIYER}</b> kariyerindedir.</td></tr>
+</table></div>
+<h2>Güncel kazanç tablosu</h2>
+<p>Kariyer basamaklarının güncel CP şartlarını ve prim oranlarını gösteren şirket tablosunu sizinle birebir paylaşıyor, kendi hedefinize göre üzerinden birlikte geçiyoruz.</p>
+<div class="cta">
+  <a class="btn primary" href="${WA('Merhaba, Homm Bitkisel güncel kazanç tablosunu almak istiyorum.')}" rel="nofollow noopener" target="_blank">Güncel Tabloyu WhatsApp'tan İste</a>
+  <a class="btn ghost" href="${KAYIT}" rel="nofollow noopener" target="_blank">Hemen Ücretsiz Üye Ol</a>
+</div>
+<p class="not">Kazanç kişinin çalışmasına, satışına ve ekibine bağlıdır; garanti edilen bir gelir yoktur.</p>
+${form('Kazanç planını telefonda anlatalım')}` },
 
 { path: 'eylem-arslan/', title: `${AD} Kimdir? ${EKIP} Kurucu Lideri, Homm Bitkisel ${KARIYER} Lider`,
   desc: `${AD}: Homm Bitkisel'de ${KARIYER} kariyerinde bağımsız temsilci ve ${EKIP}'in kurucu lideri. Ekibe nasıl katılırsınız, size nasıl destek olur?`,
@@ -410,7 +446,8 @@ ${form(`${AD} sizi arasın`)}` },
 <div class="grid3">
   <a class="card ikon link" href="tel:+${TEL_INT}">${ik.tel}<h3>Telefon</h3><p>${TEL}</p></a>
   <a class="card ikon link" href="${WA_GENEL}" rel="nofollow noopener" target="_blank">${ik.wa}<h3>WhatsApp</h3><p>Mesaj gönderin</p></a>
-  <a class="card ikon link" href="${KAYIT}" rel="nofollow noopener" target="_blank">${ik.hediye}<h3>Kayıt</h3><p>Resmi kayıt formu</p></a>
+  <a class="card ikon link" href="${KAYIT}" rel="nofollow noopener" target="_blank">${ik.hediye}<h3>Ücretsiz üyelik</h3><p>Kayıt formunu açın</p></a>
+  <a class="card ikon link" href="${MAGAZA}" rel="nofollow noopener" target="_blank">${ik.sepet}<h3>Alışveriş</h3><p>Mağazamdan sipariş verin</p></a>
 </div>
 ${form()}
 <h2>Şirketin resmi iletişim bilgileri</h2>
@@ -470,7 +507,7 @@ ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`
 </div></header>
 <main>
 ${ust}
-<div class="ic${p.hero ? '' : ' dar'} govde">
+<div class="ic${p.hero || p.genis ? '' : ' dar'} govde">
 ${p.body}
 </div>
 </main>
@@ -478,13 +515,14 @@ ${p.body}
   <div class="fgrid">
     <div><img class="flogo" src="${P}img/homm-logo.png" alt="Homm Life" width="120" height="60" loading="lazy"><p class="fmarka">${EKIP}</p><p>${AD}<br>${KARIYER} Lider · Homm Bitkisel Bağımsız Temsilcisi</p><p><a href="tel:+${TEL_INT}">${TEL}</a></p></div>
     <div><p class="fbas">Sayfalar</p>${nav.map(([h, t]) => `<a href="${P}${h}">${t}</a>`).join('')}</div>
-    <div><p class="fbas">Bilgi</p>${altnav.map(([h, t]) => `<a href="${P}${h}">${t}</a>`).join('')}<a href="${KAYIT}" rel="nofollow noopener" target="_blank">Resmi kayıt formu</a><a href="${WA_GENEL}" rel="nofollow noopener" target="_blank">WhatsApp</a></div>
+    <div><p class="fbas">Bilgi</p>${altnav.map(([h, t]) => `<a href="${P}${h}">${t}</a>`).join('')}<a href="${KAYIT}" rel="nofollow noopener" target="_blank">Ücretsiz üye ol</a><a href="${MAGAZA}" rel="nofollow noopener" target="_blank">Mağazamdan alışveriş</a><a href="${WA_GENEL}" rel="nofollow noopener" target="_blank">WhatsApp</a></div>
   </div>
   <p class="yasal">Bu site bağımsız bir temsilci sayfasıdır. Homm Bitkisel ve Homm Life adları Homm Bitkisel Ürünler Pazarlama A.Ş.'ye aittir. Resmi site: hommbitkisel.com.tr · Müşteri hizmetleri: 444 77 97. Kazanç kişinin çalışmasına bağlıdır; garanti edilen gelir yoktur.</p>
 </div></footer>
 <a class="wayuzen" href="${WA_GENEL}" rel="nofollow noopener" target="_blank" aria-label="WhatsApp'tan yazın">${ik.wa}</a>
 <div class="alt">
-  <a class="k" href="${KAYIT}" rel="nofollow noopener" target="_blank">Kayıt Ol</a>
+  <a class="k" href="${KAYIT}" rel="nofollow noopener" target="_blank">Üye Ol</a>
+  <a class="s" href="${MAGAZA}" rel="nofollow noopener" target="_blank">Alışveriş</a>
   <a class="w" href="${WA_GENEL}" rel="nofollow noopener" target="_blank">WhatsApp</a>
   <a class="a" href="tel:+${TEL_INT}">Ara</a>
 </div>
@@ -537,7 +575,14 @@ header .ic{display:flex;align-items:center;gap:10px 22px;padding-top:10px;paddin
 .urun b{font-size:15.5px;line-height:1.3}.urun i{font-style:normal;color:var(--g);font-size:13.5px}
 .indirim{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#fff4dc,#ffe9b8);border:1px solid #f1d58a;border-radius:16px;padding:12px 18px;margin:14px 0;color:#5a4300;max-width:720px}
 .indirim>b{font-family:"Playfair Display",serif;font-size:32px;color:#c2410c;line-height:1}
-.sert{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.altlink{margin:6px 0 0;font-size:15px}
+.uyebant{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;background:linear-gradient(135deg,#fff,var(--acik));border:2px solid var(--z);border-radius:20px;padding:16px 20px;margin:22px 0}
+.uyebant>div{flex:1;min-width:230px;display:grid;gap:2px}.uyebant>div>b{font-size:18px;color:var(--y)}.uyebant span{color:#334647;font-size:15px}
+.sertgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;margin:10px 0 24px}
+.sertkart{background:#fff;border:1px solid var(--s);border-radius:var(--r);padding:12px;text-decoration:none;color:var(--m);display:grid;gap:4px;transition:transform .15s,box-shadow .15s}
+.sertkart:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(21,119,125,.16)}
+.sertkart img{width:100%;aspect-ratio:1/1.38;object-fit:cover;object-position:top;border-radius:10px;border:1px solid var(--s);margin-bottom:6px}
+.sertkart small{color:var(--g)}
 .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--z),var(--y));color:#fff;display:grid;place-items:center;font-family:"Playfair Display",serif;font-size:17px}
 nav{display:flex;gap:2px 14px;font-size:14px;flex:1;flex-wrap:wrap}header .ic{max-width:1320px}
 nav a{color:var(--m);text-decoration:none;padding:4px 0;border-bottom:2px solid transparent;white-space:nowrap}
@@ -625,14 +670,14 @@ footer a{color:#fff;text-decoration:none;display:block;padding:2px 0}footer a:ho
 
 .wayuzen{position:fixed;right:22px;bottom:22px;width:58px;height:58px;border-radius:50%;background:var(--wa);color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px rgba(18,140,75,.45);z-index:15}
 .wayuzen svg{width:32px;height:32px}
-.alt{position:fixed;left:0;right:0;bottom:0;display:none;grid-template-columns:1.3fr 1fr .8fr;z-index:25;box-shadow:0 -4px 16px rgba(0,0,0,.12)}
-.alt a{padding:16px 6px;text-align:center;font-weight:700;text-decoration:none;color:#fff;font-size:15.5px}
-.alt .k{background:var(--y)}.alt .w{background:var(--wa)}.alt .a{background:#234446}
+.alt{position:fixed;left:0;right:0;bottom:0;display:none;grid-template-columns:1fr 1fr 1fr .7fr;z-index:25;box-shadow:0 -4px 16px rgba(0,0,0,.12)}
+.alt a{padding:16px 4px;text-align:center;font-weight:700;text-decoration:none;color:#fff;font-size:14.5px}
+.alt .k{background:var(--y)}.alt .s{background:#c2410c}.alt .w{background:var(--wa)}.alt .a{background:#234446}
 @media(min-width:861px){body{padding-bottom:0}}
 @media(max-width:860px){
   .alt{display:grid}.wayuzen{display:none}
   header .ic{gap:8px 14px}header .btn,.htel{display:none}.hlogo{height:40px}
-  .tanitim{grid-template-columns:1fr;gap:22px;margin:40px 0}.urunler{grid-template-columns:repeat(2,1fr);gap:10px}.urun .ug{height:150px}.urun img{max-height:128px}
+  .tanitim{grid-template-columns:1fr;gap:22px;margin:40px 0}.urunler,.sertgrid{grid-template-columns:repeat(2,1fr);gap:10px}.urun .ug{height:150px}.urun img{max-height:128px}
   nav{flex-basis:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px}nav::-webkit-scrollbar{display:none}
   .heroic{grid-template-columns:1fr;gap:30px;padding-top:28px;padding-bottom:36px}
   .herogorsel{max-width:440px}.herogorsel img{border-radius:24px 24px 24px 80px;aspect-ratio:5/5}.yuzen{left:10px;bottom:14px}
