@@ -3,9 +3,10 @@
 // Eylem Arslan'ın fotoğrafı assets/eylem-arslan.jpg olarak konursa otomatik kullanılır.
 import { mkdirSync, writeFileSync, readFileSync, rmSync, existsSync, cpSync } from 'node:fs';
 
+const YENI = process.env.ADRES === 'hommdunyasi';            // ADRES=hommdunyasi -> hommdunyasi.github.io kökünde yayın
 const REPO = 'homm-bitkisel-eylem-arslan';
-const ORIGIN = 'https://bulentarslan1453-droid.github.io';
-const P = `/${REPO}/`;
+const ORIGIN = YENI ? 'https://hommdunyasi.github.io' : 'https://bulentarslan1453-droid.github.io';
+const P = YENI ? '/' : `/${REPO}/`;
 const BASE = ORIGIN + P;
 const INDEX = process.env.INDEX === '1';
 const AD = 'Eylem Arslan';
@@ -17,7 +18,7 @@ const KAYIT_AM = KAYIT + '?_k=e32304929cfd2ee1';                                
 const MAGAZA = 'https://www.hommbitkisel.com.tr/magaza/eylem-arslan-HOMM903621099';             // perakende satış linki
 const WA = (m) => `https://wa.me/${TEL_INT}?text=${encodeURIComponent(m)}`;
 const WA_GENEL = WA('Merhaba, Homm Bitkisel üyeliği hakkında bilgi almak istiyorum.');
-const OUT = 'docs';
+const OUT = YENI ? 'docs-yeni' : 'docs';
 const FOTO = existsSync('assets/eylem-arslan.jpg');
 
 const nav = [['', 'Ana Sayfa'], ['homm-bitkisel-urunleri/', 'Ürünlerimiz'], ['hakkimizda/', 'Hakkımızda'], ['homm-bitkisel-kayit/', 'Nasıl Kayıt Olunur'], ['homm-bitkisel-temsilci-ol/', 'Temsilci Ol'], ['sik-sorulan-sorular/', 'Sık Sorulanlar'], ['iletisim/', 'İletişim']];

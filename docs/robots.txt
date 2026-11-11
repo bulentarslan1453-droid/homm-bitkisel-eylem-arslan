@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://bulentarslan1453-droid.github.io/homm-bitkisel-eylem-arslan/sitemap.xml
